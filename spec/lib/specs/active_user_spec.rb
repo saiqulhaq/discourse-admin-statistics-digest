@@ -6,10 +6,6 @@ describe AdminStatisticsDigest::Specs::ActiveUser do
     expect(described_class::KEY).to eq('active_user')
   end
 
-  it "SPECS_PARAMETERS is equals 'like received', 'like given', 'topics', 'replies', 'viewed', 'read', 'visits'" do
-    expect(described_class::SPECS_PARAMETERS).to eq(['like received', 'like given', 'topics', 'replies', 'viewed', 'read', 'visits'])
-  end
-
   describe '#to_sql' do
     let (:instance) { described_class.new }
     it 'accepts :signed_up_from parameter optionally' do

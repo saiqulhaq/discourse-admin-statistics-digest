@@ -21,6 +21,10 @@ module AdminStatisticsDigest
         PluginStore.set(AdminStatisticsDigest.plugin_name, @key, @data.delete(spec).to_a)
       end
 
+      def reset
+        PluginStore.set(AdminStatisticsDigest.plugin_name, @key, Set.new.to_a)
+      end
+
       # @return [Array]
       def data
         PluginStore.get(AdminStatisticsDigest.plugin_name, @key) || @data.to_a

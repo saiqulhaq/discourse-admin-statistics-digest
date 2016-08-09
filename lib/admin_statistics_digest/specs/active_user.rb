@@ -2,14 +2,20 @@ module AdminStatisticsDigest
   module Specs
     class ActiveUser
       KEY = 'active_user'.freeze # plugin store key name
-      SPECS_PARAMETERS = ['like received', 'like given', 'topics', 'replies', 'viewed', 'read', 'visits'].freeze
+      LIKE_RECEIVED = 'like received'
+      LIKE_GIVEN = 'live given'
+      TOPICS = 'topics'
+      REPLIES = 'replies'
+      READ = 'read'
+      VISITS = 'visits'
+
+      SPECS_PARAMETERS = [LIKE_GIVEN, LIKE_RECEIVED, TOPICS, REPLIES, READ, VISITS].freeze
+
+      attr_reader :store
+      delegate :data, :add, :remove, :reset, to: :store
 
       def initialize
         @store = AdminStatisticsDigest::Specs::Store.new(KEY, SPECS_PARAMETERS)
-      end
-
-      def specs
-        @store
       end
 
       def to_sql(filters = {})
@@ -21,36 +27,71 @@ module AdminStatisticsDigest
         raise ArgumentError if signed_up_from.present? && !(signed_up_from.kind_of?(Date) || signed_up_from.kind_of?(Time))
         raise ArgumentError if signed_up_between.present? && !signed_up_between.is_a?(Range)
 
-        return '' unless specs.data.present?
+        return '' unless data.present?
 
         last_alias_name = 't1'
-        groups = []
-        orders = []
-        sql = "SELECT #{last_alias_name}.\"id\" AS \"user_id\" from \"users\" AS #{last_alias_name} "
+        current_alias_name = nil
+        heading_name = 'user_id'
+        groups = [heading_name]
+        orders = [] # don't sort by user id
+        sql = "SELECT #{last_alias_name}.\"id\" AS \"#{heading_name}\" from \"#{User.table_name}\" AS #{last_alias_name} WHERE #{last_alias_name}.\"id\" > 0"
 
-        sql += " WHERE #{last_alias_name}.\"created_at\" >= '#{signed_up_from}' " if !!signed_up_from
-        sql += " WHERE #{last_alias_name}.\"created_at\" >= '#{signed_up_between.first}' AND #{last_alias_name}.\"created_at\" < '#{signed_up_between.last}'" if !!signed_up_between
+        sql += " AND #{last_alias_name}.\"created_at\" >= '#{signed_up_from}' " if !!signed_up_from
+        sql += " AND #{last_alias_name}.\"created_at\" >= '#{signed_up_between.first}' AND #{last_alias_name}.\"created_at\" < '#{signed_up_between.last}'" if !!signed_up_between
+        sql += " AND (#{last_alias_name}.\"admin\" = false AND #{last_alias_name}.\"moderator\" = false)" unless !!include_staff
 
-        connector = sql.include?('WHERE') ? ' AND ' : ' WHERE '
-        sql += " #{connector} #{last_alias_name}.\"admin\" = false OR #{last_alias_name}.\"moderator\" = false" unless !!include_staff
 
-        groups << 'user_id'
-        specs.data.each do |spec|
+        data.each do |spec|
           case spec
-            when 'replies'
-              last_alias_name = 't4'
-              sql = "SELECT #{last_alias_name}.*, count(t5) as \"posts\" FROM \"posts\" as t5 RIGHT JOIN ( #{sql} ) AS t4 ON #{last_alias_name}.\"user_id\" = t5.\"user_id\" "
-              sql += " AND (t5.\"topic_id\" IN (SELECT \"id\" from \"topics\" WHERE(\"topics\".\"archetype\" = 'regular'))) AND (t5.\"deleted_at\" IS NULL)"
+            when TOPICS
+              last_alias_name = 't2'
+              current_alias_name = 'c1'
+              heading_name = 'topics'
+              sql = "SELECT #{last_alias_name}.*, count(#{current_alias_name}) as \"#{heading_name}\" FROM \"#{Topic.table_name}\" as #{current_alias_name} RIGHT JOIN ( #{sql} ) AS #{last_alias_name} ON #{current_alias_name}.\"user_id\" = #{last_alias_name}.\"user_id\" "
               sql += group_by(last_alias_name, groups)
-              groups << 'posts'
-              orders << 'posts'
-            when 'topics'
+              groups << heading_name
+              orders << heading_name
+
+            when REPLIES
               last_alias_name = 't3'
-              sql = "SELECT #{last_alias_name}.*, count(t2) as \"topics\" FROM \"topics\" as t2 RIGHT JOIN ( #{sql} ) AS #{last_alias_name} ON t2.\"user_id\" = #{last_alias_name}.\"user_id\" "
+              current_alias_name = 'c2'
+              heading_name = 'posts'
+              sql = "SELECT #{last_alias_name}.*, count(#{current_alias_name}) as \"#{heading_name}\" FROM \"#{Post.table_name}\" as #{current_alias_name} RIGHT JOIN ( #{sql} ) AS #{last_alias_name} ON #{last_alias_name}.\"user_id\" = #{current_alias_name}.\"user_id\" "
+              sql += " AND (#{current_alias_name}.\"topic_id\" IN (SELECT \"id\" from \"#{Topic.table_name}\" WHERE(\"topics\".\"archetype\" = 'regular'))) AND (#{current_alias_name}.\"deleted_at\" IS NULL)"
               sql += group_by(last_alias_name, groups)
-              groups << 'topics'
-              orders << 'topics'
-            when 'topics'
+              groups << heading_name
+              orders << heading_name
+
+            when LIKE_RECEIVED
+              last_alias_name = 't4'
+              current_alias_name = 'c3'
+              heading_name = 'like_received'
+              sql = "SELECT #{last_alias_name}.*, count(#{current_alias_name}) as \"#{heading_name}\" FROM \"#{UserAction.table_name}\" as #{current_alias_name} RIGHT JOIN ( #{sql} ) AS #{last_alias_name} ON #{current_alias_name}.\"user_id\" = #{last_alias_name}.\"user_id\" "
+              sql += " AND (#{current_alias_name}.\"action_type\" = #{UserAction::WAS_LIKED})"
+              sql += group_by(last_alias_name, groups)
+              groups << heading_name
+              orders << heading_name
+            when LIKE_GIVEN
+              last_alias_name = 't5'
+              current_alias_name = 'c4'
+              heading_name = 'like_given'
+              sql = "SELECT #{last_alias_name}.*, count(#{current_alias_name}) as \"#{heading_name}\" FROM \"#{UserAction.table_name}\" as #{current_alias_name} RIGHT JOIN ( #{sql} ) AS #{last_alias_name} ON #{current_alias_name}.\"user_id\" = #{last_alias_name}.\"user_id\" "
+              sql += " AND (#{current_alias_name}.\"action_type\" = #{UserAction::LIKE})"
+              sql += group_by(last_alias_name, groups)
+              groups << heading_name
+              orders << heading_name
+            when READ
+              last_alias_name = 't6'
+              current_alias_name = 'c5'
+              heading_name = 'read'
+              sql = "SELECT #{last_alias_name}.*, COALESCE(SUM(#{current_alias_name}.\"posts_read\"),0) as \"#{heading_name}\" FROM \"#{UserVisit.table_name}\" as #{current_alias_name} RIGHT JOIN ( #{sql} ) AS #{last_alias_name} ON #{current_alias_name}.\"user_id\" = #{last_alias_name}.\"user_id\" "
+              sql += " AND (#{current_alias_name}.\"visited_at\" >= #{signed_up_from})" if !!signed_up_from
+              sql += " AND #{current_alias_name}.\"visited_at\" >= '#{signed_up_between.first}' AND #{last_alias_name}.\"visited_at\" < '#{signed_up_between.last}'" if !!signed_up_between
+
+              sql += group_by(last_alias_name, groups)
+              groups << heading_name
+              orders << heading_name
+            when VISITS
             else
               nil
           end
