@@ -117,7 +117,7 @@ describe AdminStatisticsDigest::Report do
           end
 
           it 'returns users sorted by replies and topics' do
-            expect(reporter.active_users[:data].entries.take(3).map {|e| e["user_id"].to_i }.sort).
+            expect(reporter.active_users[:data].entries.take(3).map {|e| e['user_id'].to_i }.sort).
               to(eq(@users.take(3).map(&:id).sort))
           end
         end
@@ -138,7 +138,7 @@ describe AdminStatisticsDigest::Report do
           it 'returns users sorted by like received' do
             result = reporter.active_users[:data]
             expect(result.first['like_received']).to_not eq(0)
-            expect(result.entries.take(3).map {|e| e["user_id"].to_i }.sort).to(
+            expect(result.entries.take(3).map {|e| e['user_id'].to_i }.sort).to(
               eq(@users.take(3).map(&:id).sort))
           end
         end
@@ -158,7 +158,7 @@ describe AdminStatisticsDigest::Report do
           it 'returns users sorted by like received' do
             result = reporter.active_users[:data]
             expect(result.first['like_given']).to_not eq(0)
-            expect(result.entries.take(3).map {|e| e["user_id"].to_i }.sort).to(
+            expect(result.entries.take(3).map {|e| e['user_id'].to_i }.sort).to(
               eq(@users.take(3).map(&:id).sort))
           end
         end
@@ -177,13 +177,33 @@ describe AdminStatisticsDigest::Report do
           it 'returns users sorted by posts read' do
             result = reporter.active_users[:data]
             expect(result.first['read'].to_i).to eq(10)
-            expect(result.entries.take(3).map {|e| e["user_id"].to_i }.sort).to(
+            expect(result.entries.take(3).map {|e| e['user_id'].to_i }.sort).to(
               eq(@users.reverse.take(3).map(&:id).sort))
           end
+        end
+
+        context 'when specs = "visits"' do
+          before { specs.add(const::VISITS) }
+          before do
+            @sorted_users = @users.map do |user|
+              visits = rand(20)
+              visits.times do |i|
+                UserVisit.create! user_id: user.id, visited_at: i.day.ago
+              end
+              { id: user.id, days_visited: visits }
+            end.sort { |x,y| x[:days_visited] <=> y[:days_visited] }
+
+          end
+
+          it 'returns users sorted by posts read' do
+            result = reporter.active_users[:data]
+            expect(result.map{ |u| u[:user_id] }).to eq(@sorted_users.map { |u| u['days_visited'] })
+          end
+
         end
       end
 
     end
   end
-
 end
+

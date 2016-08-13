@@ -86,12 +86,23 @@ module AdminStatisticsDigest
               heading_name = 'read'
               sql = "SELECT #{last_alias_name}.*, COALESCE(SUM(#{current_alias_name}.\"posts_read\"),0) as \"#{heading_name}\" FROM \"#{UserVisit.table_name}\" as #{current_alias_name} RIGHT JOIN ( #{sql} ) AS #{last_alias_name} ON #{current_alias_name}.\"user_id\" = #{last_alias_name}.\"user_id\" "
               sql += " AND (#{current_alias_name}.\"visited_at\" >= #{signed_up_from})" if !!signed_up_from
-              sql += " AND #{current_alias_name}.\"visited_at\" >= '#{signed_up_between.first}' AND #{last_alias_name}.\"visited_at\" < '#{signed_up_between.last}'" if !!signed_up_between
+              sql += " AND #{current_alias_name}.\"visited_at\" >= '#{signed_up_between.first}' AND #{last_alias_name}.\"visited_at\" <= '#{signed_up_between.last}'" if !!signed_up_between
 
               sql += group_by(last_alias_name, groups)
               groups << heading_name
               orders << heading_name
             when VISITS
+             # COALESCE((SELECT COUNT(id) FROM user_visits AS uv WHERE uv.user_id = u.id AND uv.visited_at >= :since), 0) days_visited,
+              last_alias_name = 't7'
+              current_alias_name = 'c6'
+              heading_name = 'days_visited'
+              sql = "SELECT #{last_alias_name}.*, COUNT(#{current_alias_name}.\"id\") as \"#{heading_name}\" FROM \"#{UserVisit.table_name}\" as #{current_alias_name} RIGHT JOIN ( #{sql} ) AS #{last_alias_name} ON #{current_alias_name}.\"user_id\" = #{last_alias_name}.\"user_id\" "
+              sql += " AND (#{current_alias_name}.\"visited_at\" >= #{signed_up_from})" if !!signed_up_from
+              sql += " AND #{current_alias_name}.\"visited_at\" >= '#{signed_up_between.first}' AND #{last_alias_name}.\"visited_at\" <= '#{signed_up_between.last}'" if !!signed_up_between
+
+              sql += group_by(last_alias_name, groups)
+              groups << heading_name
+              orders << heading_name
             else
               nil
           end
