@@ -1,7 +1,7 @@
 module AdminStatisticsDigest
   module Specs
     class ActiveUser
-      KEY = 'active_user'.freeze # plugin store key name
+      KEY = 'active_user'.freeze # config store key name
       LIKE_RECEIVED = 'like received'
       LIKE_GIVEN = 'live given'
       TOPICS = 'topics'
@@ -11,21 +11,21 @@ module AdminStatisticsDigest
 
       SPECS_PARAMETERS = [LIKE_GIVEN, LIKE_RECEIVED, TOPICS, REPLIES, READ, VISITS].freeze
 
-      attr_reader :store
-      delegate :data, :add, :remove, :reset, to: :store
+      attr_reader :config
+      delegate :data, :add, :remove, :reset, to: :config
 
       def initialize
-        @store = AdminStatisticsDigest::Specs::Store.new(KEY, SPECS_PARAMETERS)
+        @config = AdminStatisticsDigest::Config::Store.new(KEY, SPECS_PARAMETERS)
       end
 
+      # @param [Hash] filters
+      ### :signed_up_from Date or Time
+      ### :signed_up_between Range of Date or Time
+      # @return [String]
       def to_sql(filters = {})
         signed_up_from = filters.delete(:signed_up_from)
         signed_up_between = filters.delete(:signed_up_between)
         include_staff = !!filters.delete(:include_staff)
-
-        raise ArgumentError if signed_up_from.present? && signed_up_between.present?
-        raise ArgumentError if signed_up_from.present? && !(signed_up_from.kind_of?(Date) || signed_up_from.kind_of?(Time))
-        raise ArgumentError if signed_up_between.present? && !signed_up_between.is_a?(Range)
 
         return '' unless data.present?
 
@@ -92,7 +92,6 @@ module AdminStatisticsDigest
               groups << heading_name
               orders << heading_name
             when VISITS
-             # COALESCE((SELECT COUNT(id) FROM user_visits AS uv WHERE uv.user_id = u.id AND uv.visited_at >= :since), 0) days_visited,
               last_alias_name = 't7'
               current_alias_name = 'c6'
               heading_name = 'days_visited'
