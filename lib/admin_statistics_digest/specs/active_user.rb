@@ -25,7 +25,8 @@ module AdminStatisticsDigest
       def to_sql(filters = {})
         signed_up_from = filters.delete(:signed_up_from)
         signed_up_between = filters.delete(:signed_up_between)
-        include_staff = !!filters.delete(:include_staff)
+        include_staff = !!filters.delete(:include_staff) # default value is false
+        limit = filters.delete(:limit)
 
         return '' unless data.present?
 
@@ -55,7 +56,7 @@ module AdminStatisticsDigest
             when REPLIES
               last_alias_name = 't3'
               current_alias_name = 'c2'
-              heading_name = 'posts'
+              heading_name = 'replies'
               sql = "SELECT #{last_alias_name}.*, count(#{current_alias_name}) as \"#{heading_name}\" FROM \"#{Post.table_name}\" as #{current_alias_name} RIGHT JOIN ( #{sql} ) AS #{last_alias_name} ON #{last_alias_name}.\"user_id\" = #{current_alias_name}.\"user_id\" "
               sql += " AND (#{current_alias_name}.\"topic_id\" IN (SELECT \"id\" from \"#{Topic.table_name}\" WHERE(\"topics\".\"archetype\" = 'regular'))) AND (#{current_alias_name}.\"deleted_at\" IS NULL)"
               sql += group_by(last_alias_name, groups)
@@ -107,8 +108,9 @@ module AdminStatisticsDigest
           end
         end
         sql += order_by(orders) if orders.present?
+        sql += " LIMIT #{limit}" if limit.present?
 
-        sql
+        "SELECT users.name, users.username, res.* from users AS users RIGHT JOIN (#{sql}) as res ON users.id = res.user_id"
       end
 
       private

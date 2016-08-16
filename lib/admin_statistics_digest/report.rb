@@ -12,9 +12,13 @@ module AdminStatisticsDigest
     def active_users(filters = {})
       specs = AdminStatisticsDigest::Specs::ActiveUser.new
 
+      specs.reset
+      specs.add(specs.class::TOPICS)
+      specs.add(specs.class::REPLIES)
+
       sql = specs.to_sql(filters)
 
-      # copied from dicourse-data-explorer plugin
+      # copied from dicourse-data-explorer plugin for safety
       time_start, time_end, err, result = nil
       begin
         ActiveRecord::Base.connection.transaction do
