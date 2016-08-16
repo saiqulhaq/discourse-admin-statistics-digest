@@ -15,7 +15,7 @@ module AdminStatisticsDigest
       delegate :data, :add, :remove, :reset, to: :config
 
       def initialize
-        @config = AdminStatisticsDigest::Config::Store.new(KEY, SPECS_PARAMETERS)
+        @config = AdminStatisticsDigest::Config::Specs.new(KEY, SPECS_PARAMETERS)
       end
 
       # @param [Hash] filters

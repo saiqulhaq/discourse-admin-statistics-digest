@@ -1,7 +1,7 @@
 require_relative '../spec_helper'
 
 describe AdminStatisticsDigest::Config do
-  let(:config) { AdminStatisticsDigest::Config::Plugin.new }
+  let(:config) { AdminStatisticsDigest::Config::Main.new }
 
   describe '#mail_out_interval' do
     it 'default value is 30 days' do

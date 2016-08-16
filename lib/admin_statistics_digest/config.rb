@@ -1,19 +1,20 @@
 module AdminStatisticsDigest
   module Config
 
-    class Plugin
+    class Main
       DEFAULT_INTERVAL = 30.days.freeze
+      KEY_NAME = self.class.to_s.freeze
 
       def mail_out_interval
-        @interval ||= DEFAULT_INTERVAL
+        PluginStore.get(AdminStatisticsDigest.plugin_name, KEY_NAME) || DEFAULT_INTERVAL
       end
 
       def mail_out_interval=(interval)
-        @interval = interval
+        PluginStore.set(AdminStatisticsDigest.plugin_name, KEY_NAME, interval.to_i)
       end
     end
 
-    class Store
+    class Specs
       attr_accessor :valid_values
 
       # @param [String] key
@@ -26,16 +27,22 @@ module AdminStatisticsDigest
 
       def add(spec)
         return false unless valid_values.include?(spec)
-        PluginStore.set(AdminStatisticsDigest.plugin_name, @key, @data.add(spec).to_a)
+        return true if PluginStore.set(AdminStatisticsDigest.plugin_name, @key, @data.add(spec).to_a)
+        @data.delete(spec)
+        false
       end
 
       def remove(spec)
         return false unless valid_values.include?(spec)
-        PluginStore.set(AdminStatisticsDigest.plugin_name, @key, @data.delete(spec).to_a)
+        return true if PluginStore.set(AdminStatisticsDigest.plugin_name, @key, @data.delete(spec).to_a)
+        @data.add(spec)
+        false
       end
 
       def reset
-        PluginStore.set(AdminStatisticsDigest.plugin_name, @key, Set.new.to_a)
+        return false unless PluginStore.set(AdminStatisticsDigest.plugin_name, @key, [])
+        @data = Set.new
+        true
       end
 
       # @return [Array]

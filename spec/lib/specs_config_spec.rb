@@ -1,7 +1,7 @@
 require_relative '../spec_helper'
 
-describe AdminStatisticsDigest::Config::Store do
-  subject (:store) { described_class.new('really!', ['awesome', 'discourse']) }
+describe AdminStatisticsDigest::Config::Specs do
+  subject (:store) { described_class.new('really!', %w(awesome discourse)) }
 
   it { is_expected.to respond_to(:data) }
   it { is_expected.to respond_to(:add) }
