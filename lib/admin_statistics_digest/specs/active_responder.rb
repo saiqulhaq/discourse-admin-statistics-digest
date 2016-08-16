@@ -5,7 +5,7 @@ module AdminStatisticsDigest
       SPECS_PARAMETERS = %w(reply_to_post_number reads like_score).freeze
 
       def initialize
-        @store = AdminStatisticsDigest::Config::Specs.new(KEY, SPECS_PARAMETERS)
+        @store = AdminStatisticsDigest::Specs::Config.new(KEY, SPECS_PARAMETERS)
       end
 
       def specs

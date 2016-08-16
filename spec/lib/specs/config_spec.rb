@@ -1,6 +1,6 @@
-require_relative '../spec_helper'
+require_relative '../../spec_helper'
 
-describe AdminStatisticsDigest::Config::Specs do
+describe AdminStatisticsDigest::Specs::Config do
   subject (:store) { described_class.new('really!', %w(awesome discourse)) }
 
   it { is_expected.to respond_to(:data) }
