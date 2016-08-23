@@ -28,13 +28,13 @@ module ::AdminStatisticsDigest
 
       # new_active_users: {}
       # top_non_staff: {}
-      def digest(new_active_users: {}, top_non_staff_users: {})
+      def digest(new_active_users: {}, top_non_staff_users: {}, limit: 5)
         return unless SiteSetting.contact_email.present?
 
         report = AdminStatisticsDigest::Report.new
 
-        @new_active_users = report.active_users(new_active_users)[:data].entries
-        @top_non_staff_users = report.active_users(top_non_staff_users.merge(include_staff: false))[:data].entries
+        @new_active_users = report.new_active_users({ limit: limit }.merge(new_active_users))
+        @top_non_staff_users = report.top_non_staff_users({ limit: limit, include_staff: false }.merge(top_non_staff_users))
 
         build_email( SiteSetting.contact_email,
               subject: 'Report for ...',

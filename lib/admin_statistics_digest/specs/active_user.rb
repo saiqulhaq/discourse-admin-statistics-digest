@@ -2,111 +2,120 @@ module AdminStatisticsDigest
   module Specs
     class ActiveUser
       KEY = 'active_user'.freeze # config store key name
-      LIKE_RECEIVED = 'like received'
-      LIKE_GIVEN = 'live given'
-      TOPICS = 'topics'
-      REPLIES = 'replies'
-      READ = 'read'
-      VISITS = 'visits'
+      LIKE_RECEIVED = 'like received'.freeze
+      LIKE_GIVEN = 'live given'.freeze
+      TOPICS = 'topics'.freeze
+      REPLIES = 'replies'.freeze
+      READ = 'read'.freeze
+      VISITS = 'visits'.freeze
 
       SPECS_PARAMETERS = [LIKE_GIVEN, LIKE_RECEIVED, TOPICS, REPLIES, READ, VISITS].freeze
 
-      attr_reader :config
       delegate :data, :add, :remove, :reset, to: :config
 
       def initialize
-        @config = AdminStatisticsDigest::Specs::Config.new(KEY, SPECS_PARAMETERS)
+        self.config = AdminStatisticsDigest::Specs::Config.new(KEY, SPECS_PARAMETERS)
       end
 
       # @param [Hash] filters
-      ### :signed_up_from Date or Time
-      ### :signed_up_between Range of Date or Time
+      #  :signed_up_from [Date]
+      #  :signed_up_between [Range of Date]
+      #  :active_range [Range of Date]
       # @return [String]
       def to_sql(filters = {})
-        signed_up_from = filters.delete(:signed_up_from)
-        signed_up_between = filters.delete(:signed_up_between)
-        include_staff = !!filters.delete(:include_staff) # default value is false
-        limit = filters.delete(:limit)
+        active_range = filters[:active_range]
+        signed_up_from = filters[:signed_up_from]
+        signed_up_between = filters[:signed_up_between]
+        include_staff = !!filters[:include_staff] # default value is false
+        limit = filters[:limit]
 
-        return '' unless data.present?
+        # we are joining many tables recursively, so there are left and right tables for each query
 
-        last_alias_name = 't1'
-        current_alias_name = nil
         heading_name = 'user_id'
+        sql = "SELECT #{left_table_alias}.\"id\" AS \"#{heading_name}\" from \"#{User.table_name}\" AS #{left_table_alias} WHERE #{left_table_alias}.\"id\" > 0"
+
+        if !!signed_up_from
+          sql += " AND (#{left_table_alias}.\"created_at\" >= '#{signed_up_from}')"
+        end
+
+        sql += if !!signed_up_between
+                 " AND (#{left_table_alias}.\"created_at\" BETWEEN '#{signed_up_between.first}' AND '#{signed_up_between.last}')"
+               elsif !!active_range
+                 "AND (#{left_table_alias}.\"created_at\" <= '#{active_range.first}')"
+               else
+                 ''
+               end
+
+        unless !!include_staff
+          sql += " AND (#{left_table_alias}.\"admin\" = false AND #{left_table_alias}.\"moderator\" = false)"
+        end
+
         groups = [heading_name]
         orders = [] # don't sort by user id
-        sql = "SELECT #{last_alias_name}.\"id\" AS \"#{heading_name}\" from \"#{User.table_name}\" AS #{last_alias_name} WHERE #{last_alias_name}.\"id\" > 0"
-
-        sql += " AND #{last_alias_name}.\"created_at\" >= '#{signed_up_from}' " if !!signed_up_from
-        sql += " AND #{last_alias_name}.\"created_at\" >= '#{signed_up_between.first}' AND #{last_alias_name}.\"created_at\" < '#{signed_up_between.last}'" if !!signed_up_between
-        sql += " AND (#{last_alias_name}.\"admin\" = false AND #{last_alias_name}.\"moderator\" = false)" unless !!include_staff
-
 
         data.each do |spec|
+          generate_new_left_table_alias_name
+          generate_new_right_table_alias_name
+
           case spec
             when TOPICS
-              last_alias_name = 't2'
-              current_alias_name = 'c1'
               heading_name = 'topics'
-              sql = "SELECT #{last_alias_name}.*, count(#{current_alias_name}) as \"#{heading_name}\" FROM \"#{Topic.table_name}\" as #{current_alias_name} RIGHT JOIN ( #{sql} ) AS #{last_alias_name} ON #{current_alias_name}.\"user_id\" = #{last_alias_name}.\"user_id\" "
-              sql += group_by(last_alias_name, groups)
+              sql = "SELECT #{left_table_alias}.*, count(#{right_table_alias}) as \"#{heading_name}\" FROM \"#{Topic.table_name}\" as #{right_table_alias} RIGHT JOIN ( #{sql} ) AS #{left_table_alias} ON #{right_table_alias}.\"user_id\" = #{left_table_alias}.\"user_id\" "
+              sql += " AND (#{right_table_alias}.\"created_at\" BETWEEN '#{active_range.first}' AND '#{active_range.last}')" unless active_range.nil?
+
+              sql += group_by(left_table_alias, groups)
               groups << heading_name
               orders << heading_name
 
             when REPLIES
-              last_alias_name = 't3'
-              current_alias_name = 'c2'
               heading_name = 'replies'
-              sql = "SELECT #{last_alias_name}.*, count(#{current_alias_name}) as \"#{heading_name}\" FROM \"#{Post.table_name}\" as #{current_alias_name} RIGHT JOIN ( #{sql} ) AS #{last_alias_name} ON #{last_alias_name}.\"user_id\" = #{current_alias_name}.\"user_id\" "
-              sql += " AND (#{current_alias_name}.\"topic_id\" IN (SELECT \"id\" from \"#{Topic.table_name}\" WHERE(\"topics\".\"archetype\" = 'regular'))) AND (#{current_alias_name}.\"deleted_at\" IS NULL)"
-              sql += group_by(last_alias_name, groups)
+              sql = "SELECT #{left_table_alias}.*, count(#{right_table_alias}) as \"#{heading_name}\" FROM \"#{Post.table_name}\" as #{right_table_alias} RIGHT JOIN ( #{sql} ) AS #{left_table_alias} ON #{left_table_alias}.\"user_id\" = #{right_table_alias}.\"user_id\" "
+              sql += " AND (#{right_table_alias}.\"topic_id\" IN (SELECT \"id\" from \"#{Topic.table_name}\" WHERE(\"topics\".\"archetype\" = 'regular'))) AND (#{right_table_alias}.\"deleted_at\" IS NULL)"
+              sql += " AND (#{right_table_alias}.\"created_at\" BETWEEN '#{active_range.first}' AND '#{active_range.last}')" unless active_range.nil?
+
+              sql += group_by(left_table_alias, groups)
               groups << heading_name
               orders << heading_name
 
             when LIKE_RECEIVED
-              last_alias_name = 't4'
-              current_alias_name = 'c3'
               heading_name = 'like_received'
-              sql = "SELECT #{last_alias_name}.*, count(#{current_alias_name}) as \"#{heading_name}\" FROM \"#{UserAction.table_name}\" as #{current_alias_name} RIGHT JOIN ( #{sql} ) AS #{last_alias_name} ON #{current_alias_name}.\"user_id\" = #{last_alias_name}.\"user_id\" "
-              sql += " AND (#{current_alias_name}.\"action_type\" = #{UserAction::WAS_LIKED})"
-              sql += group_by(last_alias_name, groups)
+              sql = "SELECT #{left_table_alias}.*, count(#{right_table_alias}) as \"#{heading_name}\" FROM \"#{UserAction.table_name}\" as #{right_table_alias} RIGHT JOIN ( #{sql} ) AS #{left_table_alias} ON #{right_table_alias}.\"user_id\" = #{left_table_alias}.\"user_id\" "
+              sql += " AND (#{right_table_alias}.\"action_type\" = #{UserAction::WAS_LIKED})"
+              sql += " AND (#{right_table_alias}.\"created_at\" BETWEEN '#{active_range.first}' AND '#{active_range.last}')" unless active_range.nil?
+              sql += group_by(left_table_alias, groups)
               groups << heading_name
               orders << heading_name
             when LIKE_GIVEN
-              last_alias_name = 't5'
-              current_alias_name = 'c4'
               heading_name = 'like_given'
-              sql = "SELECT #{last_alias_name}.*, count(#{current_alias_name}) as \"#{heading_name}\" FROM \"#{UserAction.table_name}\" as #{current_alias_name} RIGHT JOIN ( #{sql} ) AS #{last_alias_name} ON #{current_alias_name}.\"user_id\" = #{last_alias_name}.\"user_id\" "
-              sql += " AND (#{current_alias_name}.\"action_type\" = #{UserAction::LIKE})"
-              sql += group_by(last_alias_name, groups)
+              sql = "SELECT #{left_table_alias}.*, count(#{right_table_alias}) as \"#{heading_name}\" FROM \"#{UserAction.table_name}\" as #{right_table_alias} RIGHT JOIN ( #{sql} ) AS #{left_table_alias} ON #{right_table_alias}.\"user_id\" = #{left_table_alias}.\"user_id\" "
+              sql += " AND (#{right_table_alias}.\"action_type\" = #{UserAction::LIKE})"
+              sql += " AND (#{right_table_alias}.\"created_at\" BETWEEN '#{active_range.first}' AND '#{active_range.last}')" unless active_range.nil?
+              sql += group_by(left_table_alias, groups)
               groups << heading_name
               orders << heading_name
             when READ
-              last_alias_name = 't6'
-              current_alias_name = 'c5'
               heading_name = 'read'
-              sql = "SELECT #{last_alias_name}.*, COALESCE(SUM(#{current_alias_name}.\"posts_read\"),0) as \"#{heading_name}\" FROM \"#{UserVisit.table_name}\" as #{current_alias_name} RIGHT JOIN ( #{sql} ) AS #{last_alias_name} ON #{current_alias_name}.\"user_id\" = #{last_alias_name}.\"user_id\" "
-              sql += " AND (#{current_alias_name}.\"visited_at\" >= #{signed_up_from})" if !!signed_up_from
-              sql += " AND #{current_alias_name}.\"visited_at\" >= '#{signed_up_between.first}' AND #{last_alias_name}.\"visited_at\" <= '#{signed_up_between.last}'" if !!signed_up_between
-
-              sql += group_by(last_alias_name, groups)
+              sql = "SELECT #{left_table_alias}.*, COALESCE(SUM(#{right_table_alias}.\"posts_read\"),0) as \"#{heading_name}\" FROM \"#{UserVisit.table_name}\" as #{right_table_alias} RIGHT JOIN ( #{sql} ) AS #{left_table_alias} ON #{right_table_alias}.\"user_id\" = #{left_table_alias}.\"user_id\" "
+              sql += " AND (#{right_table_alias}.\"visited_at\" >= #{signed_up_from})" if !!signed_up_from
+              sql += " AND (#{right_table_alias}.\"visited_at\" >= '#{signed_up_between.first}' AND #{left_table_alias}.\"visited_at\" <= \"#{signed_up_between.last}\")" if !!signed_up_between
+              sql += " AND (#{right_table_alias}.\"visited_at\" BETWEEN '#{active_range.first}' AND '#{active_range.last}')" unless active_range.nil?
+              sql += group_by(left_table_alias, groups)
               groups << heading_name
               orders << heading_name
             when VISITS
-              last_alias_name = 't7'
-              current_alias_name = 'c6'
               heading_name = 'days_visited'
-              sql = "SELECT #{last_alias_name}.*, COUNT(#{current_alias_name}.\"id\") as \"#{heading_name}\" FROM \"#{UserVisit.table_name}\" as #{current_alias_name} RIGHT JOIN ( #{sql} ) AS #{last_alias_name} ON #{current_alias_name}.\"user_id\" = #{last_alias_name}.\"user_id\" "
-              sql += " AND (#{current_alias_name}.\"visited_at\" >= #{signed_up_from})" if !!signed_up_from
-              sql += " AND #{current_alias_name}.\"visited_at\" >= '#{signed_up_between.first}' AND #{last_alias_name}.\"visited_at\" <= '#{signed_up_between.last}'" if !!signed_up_between
-
-              sql += group_by(last_alias_name, groups)
+              sql = "SELECT #{left_table_alias}.*, COUNT(#{right_table_alias}.\"id\") as \"#{heading_name}\" FROM \"#{UserVisit.table_name}\" as #{right_table_alias} RIGHT JOIN ( #{sql} ) AS #{left_table_alias} ON #{right_table_alias}.\"user_id\" = #{left_table_alias}.\"user_id\" "
+              sql += " AND (#{right_table_alias}.\"visited_at\" >= #{signed_up_from})" if !!signed_up_from
+              sql += " AND (#{right_table_alias}.\"visited_at\" >= '#{signed_up_between.first}' AND #{left_table_alias}.\"visited_at\" <= \"#{signed_up_between.last}\")" if !!signed_up_between
+              sql += " AND (#{right_table_alias}.\"visited_at\" BETWEEN '#{active_range.first}' AND '#{active_range.last}')" unless active_range.nil?
+              sql += group_by(left_table_alias, groups)
               groups << heading_name
               orders << heading_name
             else
-              nil
+              raise "Undefined action #{spec.to_s}"
           end
         end
+
         sql += order_by(orders) if orders.present?
         sql += " LIMIT #{limit}" if limit.present?
 
@@ -114,6 +123,8 @@ module AdminStatisticsDigest
       end
 
       private
+      attr_accessor :config
+
       def group_by(table_name, groups)
         return ' ' unless groups.present?
         sql = ' GROUP BY '
@@ -133,6 +144,23 @@ module AdminStatisticsDigest
         sql
       end
 
+      def left_table_alias
+        @left_table ||= 't1'
+      end
+
+      def generate_new_left_table_alias_name
+        ta = left_table_alias.match(/(\w)(\d*)/).to_a
+        @left_table = "#{ta[1]}#{ta[2].to_i + 1}"
+      end
+
+      def right_table_alias
+        @right_table ||= 'c1'
+      end
+
+      def generate_new_right_table_alias_name
+        ta = right_table_alias.match(/(\w)(\d*)/).to_a
+        @right_table = "#{ta[1]}#{ta[2].to_i + 1}"
+      end
     end
   end
 end
