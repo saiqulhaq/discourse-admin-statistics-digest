@@ -1,9 +1,11 @@
-module ::AdminStatisticsDigest
+module AdminStatisticsDigest
+  autoload :Report, 'admin_statistics_digest/report'
+  autoload :ActiveUser, 'admin_statistics_digest/active_user'
+  autoload :ActiveResponder, 'admin_statistics_digest/active_responder'
 
-  def plugin_name
-    'admin-statistics-digest'.freeze
+  def self.generate(&block)
+    report = AdminStatisticsDigest::Report.new
+    report.instance_eval(&block) if block_given?
+    report
   end
-  module_function :plugin_name
 end
-
-Dir[File.dirname(__FILE__) + "/admin_statistics_digest/**/*.rb"].each { |file| require file }
