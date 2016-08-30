@@ -1,28 +1,66 @@
+module AdminStatisticsDigest
+end
+
 class AdminStatisticsDigest::Report
+  def self.generate(&block)
+    self.new(&block)
+  end
+
   def initialize(&block)
-    @data = []
-    instance_eval(&block) if block_given?
+    self.rows = []
+
+    if block_given?
+      instance_eval(&block)
+    end
   end
 
-  def active_user(&block)
-    au = AdminStatisticsDigest::ActiveUser.new(&block)
-    @data << au.to_sql
+  def active_user(*options, &block)
+    au = AdminStatisticsDigest::ActiveUser.new(*options, &block)
+    rows << run_query(au.to_sql)
   end
 
-  def active_responder(&block)
-    ar = AdminStatisticsDigest::ActiveResponder.new(&block)
-    @data << ar.to_sql
+  def active_responder(*options, &block)
+    ar = AdminStatisticsDigest::ActiveResponder.new(*options, &block)
+    rows << run_query(ar.to_sql)
   end
 
-  def section(&block)
-    @data << AdminStatisticsDigest::Report.new(&block).data
+  def section(name, &block)
+    rows << {
+      name: name,
+      data: AdminStatisticsDigest::Report.new(&block).data
+    }
   end
 
-  def count
-    @data.count
+  def size
+    rows.size
   end
 
   def data
-    @data
+    rows.freeze
   end
+
+  private
+  attr_accessor :rows
+
+  def run_query(sql)
+    result = []
+    begin
+      ActiveRecord::Base.connection.transaction do
+        ActiveRecord::Base.exec_sql 'SET TRANSACTION READ ONLY'
+        ActiveRecord::Base.exec_sql 'SET LOCAL statement_timeout = 10000'
+        result = ActiveRecord::Base.exec_sql(sql)
+        result.check
+
+        raise ActiveRecord::Rollback
+      end
+    rescue Exception => ex
+      err = ex
+    end
+
+    {
+      error: err,
+      data: result.entries,
+    }
+  end
+
 end

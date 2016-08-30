@@ -1,3 +1,6 @@
+module AdminStatisticsDigest
+end
+
 class AdminStatisticsDigest::ActiveResponder
   def initialize(&block)
     if block_given?
