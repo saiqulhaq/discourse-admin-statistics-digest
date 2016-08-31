@@ -7,14 +7,15 @@ class AdminStatisticsDigest::ActiveUser
   attr_accessor :filters
 
   def self.build(&block)
-    active_user = new
-    delegator = AdminStatisticsDigest::ActiveUserDelegator.new(active_user)
-    delegator.instance_eval(&block)
-    active_user
+    new.tap {|s| s.__yield_dsl(&block) }
+  end
+
+  def rebuild(&block)
+    self.tap {|s| s.__yield_dsl(&block) }
   end
 
   def initialize
-    self.filters = {
+    @filters = {
       include_staff: false
     }
   end
@@ -42,66 +43,45 @@ class AdminStatisticsDigest::ActiveUser
     }
   end
 
+  def __yield_dsl(&block)
+    delegator = AdminStatisticsDigest::ActiveUserDelegator.new(self)
+    delegator.instance_eval(&block)
+  end
+
   private
   def to_sql
-    including_staff     = filters[:include_staff].nil? ? false : filters[:include_staff]
+    active_range = {
+      first: filters[:active_range].first.to_date,
+      last: filters[:active_range].last.to_date
+    } if !filters[:active_range].nil? && filters[:active_range].is_a?(Range)
 
-    sql = "SELECT t1.\"id\" AS \"user_id\" from \"#{User.table_name}\" AS t1 WHERE t1.\"id\" > 0"
+    including_staff  = filters[:include_staff].nil? ? false : filters[:include_staff]
 
-    # if !!signed_up_from
-    #   sql += " AND (#{left_table_alias}.\"created_at\" >= '#{signed_up_from}')"
-    # end
+    using_signed_up_from_filter = filters[:signed_up_between].is_a?(Hash) && filters[:signed_up_between][:from].present? && filters[:signed_up_between][:to].nil?
+    signed_up_from = filters[:signed_up_between][:from].to_date if using_signed_up_from_filter
 
-    # sql += if !!signed_up_between
-    #          " AND (#{left_table_alias}.\"created_at\" BETWEEN '#{signed_up_between.first}' AND '#{signed_up_between.last}')"
-    #        elsif !!active_range
-    #          "AND (#{left_table_alias}.\"created_at\" <= '#{active_range.first}')"
-    #        else
-    #          ''
-    #        end
+    <<~SQL
+          SELECT ut.*, count(Reply) as "replies", ut."topics" + count(Reply) AS "total" FROM "posts" as Reply RIGHT JOIN (
 
-    unless including_staff
-      sql += " AND (t1.\"admin\" = false AND t1.\"moderator\" = false)"
-    end
+             SELECT u.*, count(t) as "topics" FROM "topics" as t RIGHT JOIN (
 
-    sql = "SELECT t2.*, count(t3) as \"topics\" FROM \"#{Topic.table_name}\" as t3 RIGHT JOIN (#{sql}) AS t2 ON t3.\"user_id\" = t2.\"user_id\" "
-    # sql += " AND (#{right_table_alias}.\"created_at\" BETWEEN '#{active_range.first}' AND '#{active_range.last}')" unless active_range.nil?
+                  SELECT "id" "user_id", "username", "name" from "users" WHERE "id" > 0
+                    #{" AND (\"admin\" = false AND \"moderator\" = false)" unless including_staff}
+                    #{" AND (\"created_at\" >= '#{signed_up_from}')" if defined?(signed_up_from) && !signed_up_from.nil?}
+                  ) as u ON t."user_id" = u."user_id"
 
-    sql += ' GROUP BY t2."user_id" '
+             #{"AND (t.\"created_at\" BETWEEN '#{active_range[:first]}' AND '#{active_range[:last]}')" if defined?(active_range) && !active_range.nil?}
 
-    sql = "SELECT t4.*, count(t5) as \"replies\" FROM \"#{Post.table_name}\" as t5 RIGHT JOIN (#{sql}) AS t4 ON t5.\"user_id\" = t4.\"user_id\" "
-    sql += " AND (t5.\"topic_id\" IN (SELECT \"id\" from \"#{Topic.table_name}\" WHERE(\"topics\".\"archetype\" = 'regular'))) AND (t5.\"deleted_at\" IS NULL)"
-    # sql += " AND (#{right_table_alias}.\"created_at\" BETWEEN '#{active_range.first}' AND '#{active_range.last}')" unless active_range.nil?
+          GROUP BY u."user_id", u."username", u."name" )
 
-    sql += ' GROUP BY t4."user_id", t4.topics '
+          AS ut ON ut."user_id" = Reply."user_id"  AND (Reply."topic_id" IN (SELECT "id" from "topics" WHERE("topics"."archetype" = 'regular')))
+          AND (Reply."deleted_at" IS NULL)
+          #{"AND (Reply.\"created_at\" BETWEEN '#{active_range[:first]}' AND '#{active_range[:last]}')" if defined?(active_range) && !active_range.nil?}
 
-    sql += " LIMIT #{filters[:limit].to_i}" if filters[:limit].to_i > 0
-
-    "SELECT users.name, users.username, res.* from users AS users RIGHT JOIN (#{sql}) as res ON users.id = res.user_id"
+          GROUP BY  ut."user_id", ut."username", ut."name", ut."topics"
+          ORDER BY "total" DESC
+          #{"LIMIT #{filters[:limit].to_i}" if filters[:limit].to_i > 0 }
+    SQL
   end
-
-
-  def group_by(table_name, groups)
-    return ' ' unless groups.present?
-    sql = ' GROUP BY '
-    groups.each do |group|
-      sql += " #{table_name}.\"#{group}\" "
-      sql += ', ' if group != groups.last
-    end
-    sql
-  end
-
-  def order_by(orders)
-    sql = ' ORDER BY '
-    orders.each do |order|
-      sql += "#{order} DESC"
-      sql += ', ' if order != orders.last
-    end
-    sql
-  end
-
-  # def signed_up_from_filter
-  #   filters[:signed_up_between].try(:[], :from)
-  # end
 
 end

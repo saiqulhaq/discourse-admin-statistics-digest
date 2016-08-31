@@ -11,8 +11,8 @@ class AdminStatisticsDigest::ActiveUserDelegator < SimpleDelegator
     filters[:limit] = default
   end
 
-  def active_range(range)
-    filters[:active_range] = range
+  def active_range(date_range)
+    filters[:active_range] = date_range
   end
 
   def signed_up_from(date)
