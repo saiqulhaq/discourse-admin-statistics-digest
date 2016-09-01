@@ -98,7 +98,7 @@ RSpec.describe AdminStatisticsDigest::ActiveUser do
       described_class.build { include_staff }.execute
     end
 
-    it 'shows all users sorted by topics and posts, sorted by user signed up date and total of topic with posts including staff' do
+    it 'shows all users sorted by topics with posts, signed up date, and also including staff' do
       expect(result[:error]).to be_nil
       expect(result[:data].length).to eq(9)
       expect(result[:data].map {|r| r['user_id'].to_i }).to(
