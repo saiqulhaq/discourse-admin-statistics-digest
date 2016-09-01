@@ -145,14 +145,15 @@ RSpec.describe AdminStatisticsDigest::ActiveUser do
       let! :result do
         described_class.build do
           limit 5
-          active_range(60.days.ago..20.days.ago)
+          active_range(80.days.ago..25.days.ago)
         end.execute
       end
 
       it 'adjusts query based user activity date' do
         expect(result[:error]).to be_nil
-        expect(result[:data].map { |d| d['user_id'].to_i }.take(2)).to(
+        expect(result[:data].map { |d| d['user_id'].to_i }.take(3)).to(
           eq([
+               user_with_5_topics_and_5_posts_at_80_days_ago.id,
                user_with_5_topics_and_5_posts_at_25_days_ago.id,
                user_with_3_topics_and_3_posts_at_50_days_ago.id
              ])
@@ -182,11 +183,11 @@ RSpec.describe AdminStatisticsDigest::ActiveUser do
       end
     end
 
-    describe 'signed_up_between filter', skip: true do
+    describe 'signed_up_between filter' do
       let! :result do
         described_class.build do
           limit 5
-          signed_up_between(from: 30.days.ago, to: 5.days.ago)
+          signed_up_between(from: 60.days.ago, to: 5.days.ago)
         end.execute
       end
 
@@ -198,12 +199,11 @@ RSpec.describe AdminStatisticsDigest::ActiveUser do
                user_with_10_posts_at_10_days_ago.id,
                user_with_5_topics_and_5_posts_at_25_days_ago.id,
                user_with_8_posts_at_5_days_ago.id,
-               user_with_3_topics_at_3_days_ago.id,
+               user_with_3_topics_and_3_posts_at_50_days_ago.id
              ])
         )
       end
     end
-
 
   end
 end
