@@ -54,7 +54,7 @@ class AdminStatisticsDigest::ActiveUser < AdminStatisticsDigest::FilterBase
           #{"AND ((Reply.\"created_at\", Reply.\"created_at\") OVERLAPS ('#{active_range[:first].beginning_of_day}', '#{active_range[:last].end_of_day}') OR Reply.\"created_at\" = '#{active_range[:first]}' OR Reply.\"created_at\" =  '#{active_range[:last]}')" if defined?(active_range) && !active_range.nil?}
 
           GROUP BY ut."user_id", ut."username", ut."name", ut."signed_up_at", ut."topics"
-          ORDER BY COUNT(Reply) DESC, ut."signed_up_at" ASC
+          ORDER BY ut."topics" + COUNT(Reply) DESC, ut."signed_up_at" ASC
           #{"LIMIT #{filters[:limit].to_i}" if filters[:limit].to_i > 0 }
     SQL
   end
