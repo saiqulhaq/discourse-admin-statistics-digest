@@ -144,14 +144,14 @@ RSpec.describe AdminStatisticsDigest::ActiveUser do
     describe 'active_range filter' do
       let! :result do
         described_class.build do
-          limit 5
+          limit 3
           active_range(80.days.ago..25.days.ago)
         end.execute
       end
 
       it 'adjusts query based user activity date' do
         expect(result[:error]).to be_nil
-        expect(result[:data].map { |d| d['user_id'].to_i }.take(3)).to(
+        expect(result[:data].map { |d| d['user_id'].to_i }).to(
           eq([
                user_with_5_topics_and_5_posts_at_80_days_ago.id,
                user_with_5_topics_and_5_posts_at_25_days_ago.id,
@@ -171,7 +171,7 @@ RSpec.describe AdminStatisticsDigest::ActiveUser do
 
       it 'adjusts query based user signed up date' do
         expect(result[:error]).to be_nil
-        expect(result[:data].map { |d| d['user_id'].to_i }.take(5)).to(
+        expect(result[:data].map { |d| d['user_id'].to_i }).to(
           match_array([
                user_with_12_topics_at_20_days_ago.id,
                user_with_10_posts_at_10_days_ago.id,
@@ -191,9 +191,9 @@ RSpec.describe AdminStatisticsDigest::ActiveUser do
         end.execute
       end
 
-      it 'adjusts query based user signed up date' do
+      it 'adjusts querying user#created_at between given date' do
         expect(result[:error]).to be_nil
-        expect(result[:data].map { |d| d['user_id'].to_i }.take(5)).to(
+        expect(result[:data].map { |d| d['user_id'].to_i }).to(
           match_array([
                user_with_12_topics_at_20_days_ago.id,
                user_with_10_posts_at_10_days_ago.id,
@@ -201,6 +201,25 @@ RSpec.describe AdminStatisticsDigest::ActiveUser do
                user_with_8_posts_at_5_days_ago.id,
                user_with_3_topics_and_3_posts_at_50_days_ago.id
              ])
+        )
+      end
+    end
+
+    describe 'signed_up_before filter' do
+      let! :result do
+        described_class.build do
+          limit 2
+          signed_up_before(30.days.ago)
+        end.execute
+      end
+
+      it 'adjusts querying user#created_at before given date' do
+        expect(result[:error]).to be_nil
+        expect(result[:data].map { |d| d['user_id'].to_i }).to(
+          match_array([
+                        user_with_5_topics_and_5_posts_at_80_days_ago.id,
+                        user_with_3_topics_and_3_posts_at_50_days_ago.id
+                      ])
         )
       end
     end

@@ -9,19 +9,15 @@ class AdminStatisticsDigest::Report
   def initialize(&block)
     self.rows = []
 
-    if block_given?
-      instance_eval(&block)
-    end
+    instance_eval(&block) if block_given?
   end
 
-  def active_user(*options, &block)
-    au = AdminStatisticsDigest::ActiveUser.new(*options, &block)
-    rows << run_query(au.to_sql)
+  def active_user(&block)
+    rows << run_query(AdminStatisticsDigest::ActiveUser.build(&block).to_sql)
   end
 
-  def active_responder(*options, &block)
-    ar = AdminStatisticsDigest::ActiveResponder.new(*options, &block)
-    rows << run_query(ar.to_sql)
+  def active_responder(&block)
+    rows << run_query(AdminStatisticsDigest::ActiveResponder.build(&block).to_sql)
   end
 
   def section(name, &block)
@@ -43,7 +39,7 @@ class AdminStatisticsDigest::Report
   attr_accessor :rows
 
   def run_query(sql)
-    result = []
+    result, err = [], nil
     begin
       ActiveRecord::Base.connection.transaction do
         ActiveRecord::Base.exec_sql 'SET TRANSACTION READ ONLY'
