@@ -161,11 +161,11 @@ RSpec.describe AdminStatisticsDigest::ActiveUser do
       end
     end
 
-    describe 'signed_up_from filter' do
+    describe 'signed_up_since filter' do
       let! :result do
         described_class.build do
           limit 5
-          signed_up_from(30.days.ago)
+          signed_up_since(30.days.ago)
         end.execute
       end
 

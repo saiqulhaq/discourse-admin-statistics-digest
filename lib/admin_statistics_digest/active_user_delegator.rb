@@ -15,7 +15,7 @@ class AdminStatisticsDigest::ActiveUserDelegator < SimpleDelegator
     filters[:active_range] = date_range
   end
 
-  def signed_up_from(date)
+  def signed_up_since(date)
     filters[:signed_up_between] = { from: date.to_date, to: nil}
   end
 

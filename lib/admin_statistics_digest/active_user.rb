@@ -60,8 +60,8 @@ class AdminStatisticsDigest::ActiveUser
 
     including_staff  = filters[:include_staff].nil? ? false : filters[:include_staff]
 
-    using_signed_up_from_filter = filters[:signed_up_between].is_a?(Hash) && filters[:signed_up_between][:from].present? && filters[:signed_up_between][:to].nil?
-    signed_up_from = filters[:signed_up_between][:from] if using_signed_up_from_filter
+    using_signed_up_since_filter = filters[:signed_up_between].is_a?(Hash) && filters[:signed_up_between][:from].present? && filters[:signed_up_between][:to].nil?
+    signed_up_since = filters[:signed_up_between][:from] if using_signed_up_since_filter
 
     signed_up_between = filters[:signed_up_between] if filters[:signed_up_between].is_a?(Hash) && filters[:signed_up_between][:from].present? && filters[:signed_up_between][:to].present?
 
@@ -75,7 +75,7 @@ class AdminStatisticsDigest::ActiveUser
                   SELECT "id" "user_id", "username", "name", EXTRACT(EPOCH FROM "created_at") "signed_up_at" from "users" WHERE "id" > 0
                     #{" AND (\"admin\" = false AND \"moderator\" = false)" unless including_staff}
 
-                    #{" AND (\"created_at\" >= '#{signed_up_from}')" if defined?(signed_up_from) && signed_up_from.is_a?(Date)}
+                    #{" AND (\"created_at\" >= '#{signed_up_since}')" if defined?(signed_up_since) && signed_up_since.is_a?(Date)}
 
                     #{" AND (\"created_at\" < '#{signed_up_before}')" if defined?(signed_up_before) && signed_up_before.is_a?(Date)}
 
