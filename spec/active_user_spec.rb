@@ -161,7 +161,7 @@ RSpec.describe AdminStatisticsDigest::ActiveUser do
       end
     end
 
-    describe 'signed_up_between filter' do
+    describe 'signed_up_from filter' do
       let! :result do
         described_class.build do
           limit 5
