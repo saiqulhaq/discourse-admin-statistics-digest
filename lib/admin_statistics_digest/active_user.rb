@@ -5,7 +5,7 @@ require_relative '../admin_statistics_digest/active_user_delegator'
 require_relative '../admin_statistics_digest/dsl_methods'
 
 class AdminStatisticsDigest::ActiveUser
-  include DslMethods
+  include AdminStatisticsDigest::DslMethods
 
   attr_accessor :filters
 

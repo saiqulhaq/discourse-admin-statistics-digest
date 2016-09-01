@@ -1,6 +1,6 @@
 require 'active_support/concern'
 
-module DslMethods
+module AdminStatisticsDigest::DslMethods
   extend ActiveSupport::Concern
 
   included do

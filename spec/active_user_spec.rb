@@ -116,14 +116,17 @@ RSpec.describe AdminStatisticsDigest::ActiveUser do
     end
   end
 
-  describe 'include_staff filter' do
-    context 'value is true' do
-      let! :result do
-        described_class.build { include_staff }.execute
-      end
+  context 'filter given' do
 
-      it 'includes staff users to query' do
-        expect(result[:data].size).to eq(9)
+    describe '#include_staff' do
+      context 'value is true' do
+        let! :result do
+          described_class.build { include_staff }.execute
+        end
+
+        it 'includes staff users to query' do
+          expect(result[:data].size).to eq(9)
+        end
       end
 
       context 'value is false' do
@@ -150,7 +153,7 @@ RSpec.describe AdminStatisticsDigest::ActiveUser do
       end
     end
 
-    describe 'limit filter' do
+    describe '#limit' do
       let! :result do
         described_class.build { limit(3) }.execute
       end
@@ -160,7 +163,7 @@ RSpec.describe AdminStatisticsDigest::ActiveUser do
       end
     end
 
-    describe 'active_range filter' do
+    describe '#active_range' do
       let! :result do
         described_class.build do
           limit 3
@@ -168,7 +171,7 @@ RSpec.describe AdminStatisticsDigest::ActiveUser do
         end.execute
       end
 
-      it 'adjusts query based user activity date' do
+      it 'calculates user activity based on given date' do
         expect(result[:error]).to be_nil
         expect(result[:data].map { |d| d['user_id'].to_i }).to(
           eq([
@@ -180,7 +183,7 @@ RSpec.describe AdminStatisticsDigest::ActiveUser do
       end
     end
 
-    describe 'signed_up_since filter' do
+    describe '#signed_up_since' do
       let! :result do
         described_class.build do
           limit 5
@@ -188,7 +191,7 @@ RSpec.describe AdminStatisticsDigest::ActiveUser do
         end.execute
       end
 
-      it 'adjusts query based user signed up date' do
+      it 'adjust query to select users#created_at >= given date' do
         expect(result[:error]).to be_nil
         expect(result[:data].map { |d| d['user_id'].to_i }).to(
           match_array([
@@ -202,7 +205,7 @@ RSpec.describe AdminStatisticsDigest::ActiveUser do
       end
     end
 
-    describe 'signed_up_between filter' do
+    describe '#signed_up_between' do
       let! :result do
         described_class.build do
           limit 5
@@ -210,7 +213,7 @@ RSpec.describe AdminStatisticsDigest::ActiveUser do
         end.execute
       end
 
-      it 'adjusts querying user#created_at between given date' do
+      it 'adjust query to select users#created_at between given date' do
         expect(result[:error]).to be_nil
         expect(result[:data].map { |d| d['user_id'].to_i }).to(
           match_array([
@@ -224,7 +227,7 @@ RSpec.describe AdminStatisticsDigest::ActiveUser do
       end
     end
 
-    describe 'signed_up_before filter' do
+    describe '#signed_up_before' do
       let! :result do
         described_class.build do
           limit 2
@@ -232,7 +235,7 @@ RSpec.describe AdminStatisticsDigest::ActiveUser do
         end.execute
       end
 
-      it 'adjusts querying user#created_at before given date' do
+      it 'adjust query to select users#created_at <= given date' do
         expect(result[:error]).to be_nil
         expect(result[:data].map { |d| d['user_id'].to_i }).to(
           match_array([
@@ -244,4 +247,6 @@ RSpec.describe AdminStatisticsDigest::ActiveUser do
     end
 
   end
+
+
 end
