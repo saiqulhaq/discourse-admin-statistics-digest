@@ -1,22 +1,9 @@
 module AdminStatisticsDigest
 end
 
-require_relative '../admin_statistics_digest/dsl_methods'
+require_relative '../admin_statistics_digest/filter_base'
+require_relative '../admin_statistics_digest/active_responder_delegator'
 
-class AdminStatisticsDigest::ActiveResponder
-  include AdminStatisticsDigest::DslMethods
+class AdminStatisticsDigest::ActiveResponder < AdminStatisticsDigest::FilterBase
 
-  def initialize(&block)
-    if block_given?
-      if block.arity == 1
-        yield self
-      else
-        instance_eval &block
-      end
-    end
-  end
-
-  def to_sql
-    'SQL Active Responder'
-  end
 end

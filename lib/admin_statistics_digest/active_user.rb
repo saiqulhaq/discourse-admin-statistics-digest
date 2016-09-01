@@ -1,13 +1,10 @@
 module AdminStatisticsDigest
 end
 
+require_relative '../admin_statistics_digest/filter_base'
 require_relative '../admin_statistics_digest/active_user_delegator'
-require_relative '../admin_statistics_digest/dsl_methods'
 
-class AdminStatisticsDigest::ActiveUser
-  include AdminStatisticsDigest::DslMethods
-
-  attr_accessor :filters
+class AdminStatisticsDigest::ActiveUser < AdminStatisticsDigest::FilterBase
 
   def initialize
     @filters = {
@@ -15,33 +12,6 @@ class AdminStatisticsDigest::ActiveUser
     }
   end
 
-  def execute
-    result = []
-    err = nil
-    begin
-      ActiveRecord::Base.connection.transaction do
-        ActiveRecord::Base.exec_sql 'SET TRANSACTION READ ONLY'
-        ActiveRecord::Base.exec_sql 'SET LOCAL statement_timeout = 10000'
-        result = ActiveRecord::Base.exec_sql(to_sql)
-        result.check
-
-        raise ActiveRecord::Rollback
-      end
-    rescue Exception => ex
-      if Rails.env.test?
-        puts to_sql
-        raise ex
-      end
-      err = ex
-    end
-
-    {
-      error: err,
-      data: result.entries
-    }
-  end
-
-  private
   def to_sql
     active_range = {
       first: filters[:active_range].first.to_date,
