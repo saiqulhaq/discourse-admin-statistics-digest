@@ -2,17 +2,12 @@ module AdminStatisticsDigest
 end
 
 require_relative '../admin_statistics_digest/active_user_delegator'
+require_relative '../admin_statistics_digest/dsl_methods'
 
 class AdminStatisticsDigest::ActiveUser
+  include DslMethods
+
   attr_accessor :filters
-
-  def self.build(&block)
-    new.tap {|s| s.__yield_dsl(&block) }
-  end
-
-  def rebuild(&block)
-    self.tap {|s| s.__yield_dsl(&block) }
-  end
 
   def initialize
     @filters = {
@@ -44,11 +39,6 @@ class AdminStatisticsDigest::ActiveUser
       error: err,
       data: result.entries
     }
-  end
-
-  def __yield_dsl(&block)
-    delegator = AdminStatisticsDigest::ActiveUserDelegator.new(self)
-    delegator.instance_eval(&block)
   end
 
   private

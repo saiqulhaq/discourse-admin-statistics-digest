@@ -5,44 +5,40 @@ RSpec.describe AdminStatisticsDigest::ActiveUser do
   # setup user
   let!(:user_with_5_topics_and_5_posts_at_80_days_ago) do
     Timecop.freeze 80.days.ago do
-      user = Fabricate.create(:user, name: 'user_with_5_topics_and_5_posts_at_80_days_ago')
-      5.times do
-        topic = create_topic(user: user)
-        create_post(user: user, topic: topic)
+      Fabricate.create(:user, name: 'user_with_5_topics_and_5_posts_at_80_days_ago').tap do |user|
+        Fabricate.times(5, :topic, user: user).each do |topic|
+          Fabricate(:post, user: user, topic: topic)
+        end
       end
-      user
     end
   end
 
   let!(:user_with_5_topics_and_5_posts_at_25_days_ago) do
     Timecop.freeze 25.days.ago do
-      user = Fabricate.create(:user, name: 'user_with_5_topics_and_5_posts_at_25_days_ago')
-      5.times do
-        topic = create_topic(user: user)
-        create_post(user: user, topic: topic)
+      Fabricate.create(:user, name: 'user_with_5_topics_and_5_posts_at_25_days_ago').tap do |user|
+        Fabricate.times(5, :topic, user: user).each do |topic|
+          Fabricate(:post, user: user, topic: topic)
+        end
       end
-      user
     end
   end
 
-
   let!(:user_with_3_topics_and_3_posts_at_50_days_ago) do
     Timecop.freeze 50.days.ago do
-      user = Fabricate.create(:user, name: 'user_with_3_topics_and_3_posts_at_50_days_ago')
-      3.times do
-        topic = create_topic(user: user)
-        create_post(user: user, topic: topic)
+      Fabricate.create(:user, name: 'user_with_3_topics_and_3_posts_at_50_days_ago').tap do |user|
+        Fabricate.times(3, :topic, user: user).each do |topic|
+          Fabricate(:post, user: user, topic: topic)
+        end
       end
-      user
     end
   end
 
   let!(:user_with_10_posts_at_10_days_ago) do
     topic = Topic.last
     Timecop.freeze 10.days.ago do
-      user = Fabricate.create(:user, name: 'user_with_10_posts_at_10_days_ago')
-      10.times { create_post(user: user, topic: topic) }
-      user
+      Fabricate.create(:user, name: 'user_with_10_posts_at_10_days_ago').tap do |user|
+        Fabricate.times(10, :post, user: user, topic: topic)
+      end
     end
   end
 
@@ -50,41 +46,41 @@ RSpec.describe AdminStatisticsDigest::ActiveUser do
   let!(:user_with_8_posts_at_5_days_ago) do
     topic = Topic.last
     Timecop.freeze 5.days.ago do
-      user = Fabricate.create(:user, name: 'user_with_8_posts_at_5_days_ago')
-      8.times { create_post(user: user, topic: topic) }
-      user
+      Fabricate.create(:user, name: 'user_with_8_posts_at_5_days_ago').tap do |user|
+        Fabricate.times(8, :post, user: user, topic: topic)
+      end
     end
   end
 
   let!(:user_with_12_topics_at_20_days_ago) do
     Timecop.freeze 20.days.ago do
-      user = Fabricate.create(:user, name: 'user_with_12_topics_at_20_days_ago')
-      12.times { create_topic(user: user) }
-      user
+      Fabricate.create(:user, name: 'user_with_12_topics_at_20_days_ago').tap do |user|
+        Fabricate.times(12, :topic, user: user)
+      end
     end
   end
 
   let!(:user_with_3_topics_at_3_days_ago) do
     Timecop.freeze 3.days.ago do
-      user = Fabricate.create(:user, name: 'user_with_3_topics_at_3_days_ago')
-      3.times { create_topic(user: user) }
-      user
+      Fabricate.create(:user, name: 'user_with_3_topics_at_3_days_ago').tap do |user|
+        Fabricate.times(3, :topic, user: user)
+      end
     end
   end
 
   let!(:admin_with_4_topics_at_12_days_ago) do
     Timecop.freeze 12.days.ago do
-      admin = Fabricate.create(:user, admin: true, name: 'Admin - admin_with_4_topics_at_12_days_ago')
-      4.times { create_topic(user: admin) }
-      admin
+      Fabricate.create(:user, admin: true, name: 'Admin - admin_with_4_topics_at_12_days_ago').tap do |admin|
+        Fabricate.times(4, :topic, user: admin)
+      end
     end
   end
 
   let!(:moderator_with_7_topics_at_yesterday) do
     Timecop.freeze Date.yesterday do
-      moderator = Fabricate.create(:user, moderator: true, name: 'Moderator - moderator_with_7_topics_at_yesterday')
-      7.times { create_topic(user: moderator) }
-      moderator
+      Fabricate.create(:user, moderator: true, name: 'Moderator - moderator_with_7_topics_at_yesterday').tap do |m|
+        Fabricate.times(7, :topic, user: m)
+      end
     end
   end
 
@@ -96,6 +92,29 @@ RSpec.describe AdminStatisticsDigest::ActiveUser do
     end
   end
   # end setup user
+
+  context 'no filter given' do
+    let! :result do
+      described_class.build { include_staff }.execute
+    end
+
+    it 'shows all users sorted by topics and posts, sorted by user signed up date and total of topic with posts including staff' do
+      expect(result[:error]).to be_nil
+      expect(result[:data].length).to eq(9)
+      expect(result[:data].map {|r| r['user_id'].to_i }).to(
+        match_array([
+                      user_with_12_topics_at_20_days_ago.id,
+                      user_with_5_topics_and_5_posts_at_80_days_ago.id,
+                      user_with_5_topics_and_5_posts_at_25_days_ago.id,
+                      user_with_10_posts_at_10_days_ago.id,
+                      user_with_8_posts_at_5_days_ago.id,
+                      user_with_3_topics_and_3_posts_at_50_days_ago.id,
+                      user_with_3_topics_at_3_days_ago.id,
+                      moderator_with_7_topics_at_yesterday.id,
+                      admin_with_4_topics_at_12_days_ago.id
+                    ]))
+    end
+  end
 
   describe 'include_staff filter' do
     context 'value is true' do
@@ -173,12 +192,12 @@ RSpec.describe AdminStatisticsDigest::ActiveUser do
         expect(result[:error]).to be_nil
         expect(result[:data].map { |d| d['user_id'].to_i }).to(
           match_array([
-               user_with_12_topics_at_20_days_ago.id,
-               user_with_10_posts_at_10_days_ago.id,
-               user_with_5_topics_and_5_posts_at_25_days_ago.id,
-               user_with_8_posts_at_5_days_ago.id,
-               user_with_3_topics_at_3_days_ago.id,
-             ])
+                        user_with_12_topics_at_20_days_ago.id,
+                        user_with_10_posts_at_10_days_ago.id,
+                        user_with_5_topics_and_5_posts_at_25_days_ago.id,
+                        user_with_8_posts_at_5_days_ago.id,
+                        user_with_3_topics_at_3_days_ago.id,
+                      ])
         )
       end
     end
@@ -195,12 +214,12 @@ RSpec.describe AdminStatisticsDigest::ActiveUser do
         expect(result[:error]).to be_nil
         expect(result[:data].map { |d| d['user_id'].to_i }).to(
           match_array([
-               user_with_12_topics_at_20_days_ago.id,
-               user_with_10_posts_at_10_days_ago.id,
-               user_with_5_topics_and_5_posts_at_25_days_ago.id,
-               user_with_8_posts_at_5_days_ago.id,
-               user_with_3_topics_and_3_posts_at_50_days_ago.id
-             ])
+                        user_with_12_topics_at_20_days_ago.id,
+                        user_with_10_posts_at_10_days_ago.id,
+                        user_with_5_topics_and_5_posts_at_25_days_ago.id,
+                        user_with_8_posts_at_5_days_ago.id,
+                        user_with_3_topics_and_3_posts_at_50_days_ago.id
+                      ])
         )
       end
     end
