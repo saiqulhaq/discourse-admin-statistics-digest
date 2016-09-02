@@ -49,7 +49,7 @@ class AdminStatisticsDigest::ActiveUser < AdminStatisticsDigest::FilterBase
 
           GROUP BY ut."user_id", ut."username", ut."name", ut."signed_up_at", ut."topics"
           ORDER BY ut."topics" + COUNT(Reply) DESC, ut."signed_up_at" ASC
-          #{"LIMIT #{filters[:limit].to_i}" if filters[:limit].to_i > 0 }
+          #{"LIMIT #{limit}" if limit > 0 }
     SQL
   end
 

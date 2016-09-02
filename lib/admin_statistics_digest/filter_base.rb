@@ -40,12 +40,17 @@ class AdminStatisticsDigest::FilterBase
   private :to_sql
 
   private
+
   def date_range
     return {
       first: filters[:date_range].first.to_date,
       last: filters[:date_range].last.to_date
     } if !filters[:date_range].nil? && filters[:date_range].is_a?(Range)
     nil
+  end
+
+  def limit
+    filters[:limit].to_i
   end
 
 end

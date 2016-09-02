@@ -20,7 +20,8 @@ WHERE p.topic_id IN (SELECT t."id" FROM #{Topic.table_name} t WHERE t.category_i
 AND p."deleted_at" IS NULL
 
 GROUP BY p.user_id, s.username, s.name
-ORDER BY responds DESC;
+ORDER BY responds DESC
+#{"LIMIT #{limit}" if limit > 0 }
     SQL
   end
 

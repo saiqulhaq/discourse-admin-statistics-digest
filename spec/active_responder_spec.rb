@@ -18,7 +18,7 @@ RSpec.describe AdminStatisticsDigest::ActiveResponder do
     Fabricate(:user, name: 'user_with_10_replies_to_support_and_bug_category_at_3_months_ago').tap do |user|
       Timecop.freeze 3.months.ago do
         support_topic = Fabricate(:topic, category_id: support_category.id)
-        bug_topic = Fabricate(:topic, category_id: support_category.id)
+        bug_topic = Fabricate(:topic, category_id: bug_category.id)
         Fabricate.times(10, :post, user: user, topic: support_topic)
         Fabricate.times(10, :post, user: user, topic: bug_topic)
       end
@@ -29,7 +29,7 @@ RSpec.describe AdminStatisticsDigest::ActiveResponder do
     Fabricate(:user, name: 'user_with_6_replies_to_support_and_bug_category_at_3_months_ago').tap do |user|
       Timecop.freeze 3.months.ago do
         support_topic = Fabricate(:topic, category_id: support_category.id)
-        bug_topic = Fabricate(:topic, category_id: support_category.id)
+        bug_topic = Fabricate(:topic, category_id: bug_category.id)
         Fabricate.times(6, :post, user: user, topic: support_topic)
         Fabricate.times(6, :post, user: user, topic: bug_topic)
       end
@@ -40,7 +40,7 @@ RSpec.describe AdminStatisticsDigest::ActiveResponder do
     Fabricate(:user, name: 'user_with_3_replies_to_support_and_bug_category_at_2_months_ago').tap do |user|
       Timecop.freeze 2.months.ago do
         support_topic = Fabricate(:topic, category_id: support_category.id)
-        bug_topic = Fabricate(:topic, category_id: support_category.id)
+        bug_topic = Fabricate(:topic, category_id: bug_category.id)
         Fabricate.times(3, :post, user: user, topic: support_topic)
         Fabricate.times(3, :post, user: user, topic: bug_topic)
       end
@@ -51,7 +51,7 @@ RSpec.describe AdminStatisticsDigest::ActiveResponder do
     Fabricate(:user, name: 'user_with_1_replies_to_support_and_bug_category_at_2_months_ago').tap do |user|
       Timecop.freeze 2.months.ago do
         support_topic = Fabricate(:topic, category_id: support_category.id)
-        bug_topic = Fabricate(:topic, category_id: support_category.id)
+        bug_topic = Fabricate(:topic, category_id: bug_category.id)
         Fabricate(:post, user: user, topic: support_topic)
         Fabricate(:post, user: user, topic: bug_topic)
       end
@@ -158,6 +158,26 @@ RSpec.describe AdminStatisticsDigest::ActiveResponder do
       end
 
     end
+
+    describe 'limit filter' do
+      it 'limits the result' do
+        category = bug_category
+
+        result = described_class.build do
+          topic_category_id category.id
+          limit 2
+        end.execute
+
+        expect(result[:error]).to be_nil
+        expect(result[:data].map {|d| d['user_id'].to_i}).to(
+          match_array([
+                        user_with_10_replies_to_support_and_bug_category_at_3_months_ago.id,
+                        user_with_6_replies_to_support_and_bug_category_at_3_months_ago.id,
+                      ])
+        )
+      end
+    end
+
   end
 
 end
