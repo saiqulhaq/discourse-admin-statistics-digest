@@ -4,6 +4,10 @@ class AdminStatisticsDigest::FilterBase
   include AdminStatisticsDigest::DslMethods
   attr_accessor :filters
 
+  def initialize
+    @filters = {}
+  end
+
   def execute
     result = []
     err = nil
@@ -34,5 +38,14 @@ class AdminStatisticsDigest::FilterBase
     raise 'Not implemented'
   end
   private :to_sql
+
+  private
+  def active_range
+    return {
+      first: filters[:active_range].first.to_date,
+      last: filters[:active_range].last.to_date
+    } if !filters[:active_range].nil? && filters[:active_range].is_a?(Range)
+    nil
+  end
 
 end

@@ -7,17 +7,11 @@ require_relative '../admin_statistics_digest/active_user_delegator'
 class AdminStatisticsDigest::ActiveUser < AdminStatisticsDigest::FilterBase
 
   def initialize
-    @filters = {
-      include_staff: false
-    }
+    super
+    @filters[:include_staff] = false
   end
 
   def to_sql
-    active_range = {
-      first: filters[:active_range].first.to_date,
-      last: filters[:active_range].last.to_date
-    } if !filters[:active_range].nil? && filters[:active_range].is_a?(Range)
-
     including_staff  = filters[:include_staff].nil? ? false : filters[:include_staff]
 
     using_signed_up_since_filter = filters[:signed_up_between].is_a?(Hash) && filters[:signed_up_between][:from].present? && filters[:signed_up_between][:to].nil?
@@ -44,7 +38,7 @@ class AdminStatisticsDigest::ActiveUser < AdminStatisticsDigest::FilterBase
                     ORDER BY "created_at" DESC
              ) as u ON t."user_id" = u."user_id"
 
-             #{"AND ((t.\"created_at\", t.\"created_at\") OVERLAPS ('#{active_range[:first].beginning_of_day}', '#{active_range[:last].end_of_day}') OR t.\"created_at\" = '#{active_range[:first]}' OR t.\"created_at\" = '#{active_range[:last]}')" if defined?(active_range) && !active_range.nil?}
+             #{"AND ((t.\"created_at\", t.\"created_at\") OVERLAPS ('#{active_range[:first].beginning_of_day}', '#{active_range[:last].end_of_day}') OR t.\"created_at\" = '#{active_range[:first]}' OR t.\"created_at\" = '#{active_range[:last]}')" unless active_range.nil?}
 
              GROUP BY u."user_id", u."username", u."name", u."signed_up_at"
           )
