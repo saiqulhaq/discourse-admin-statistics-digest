@@ -2,8 +2,8 @@ require 'delegate'
 
 class AdminStatisticsDigest::ActiveResponderDelegator < SimpleDelegator
 
-  def active_range(date)
-    filters[:active_range] = date
+  def date_range(date_range)
+    filters[:date_range] = date_range
   end
 
   def topic_category_id(category_id)

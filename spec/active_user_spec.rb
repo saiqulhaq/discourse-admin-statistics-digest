@@ -167,7 +167,7 @@ RSpec.describe AdminStatisticsDigest::ActiveUser do
       let! :result do
         described_class.build do
           limit 3
-          active_range(80.days.ago..25.days.ago)
+          date_range(80.days.ago..25.days.ago)
         end.execute
       end
 

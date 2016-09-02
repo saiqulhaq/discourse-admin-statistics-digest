@@ -40,11 +40,11 @@ class AdminStatisticsDigest::FilterBase
   private :to_sql
 
   private
-  def active_range
+  def date_range
     return {
-      first: filters[:active_range].first.to_date,
-      last: filters[:active_range].last.to_date
-    } if !filters[:active_range].nil? && filters[:active_range].is_a?(Range)
+      first: filters[:date_range].first.to_date,
+      last: filters[:date_range].last.to_date
+    } if !filters[:date_range].nil? && filters[:date_range].is_a?(Range)
     nil
   end
 
