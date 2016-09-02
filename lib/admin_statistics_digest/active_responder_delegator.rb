@@ -1,12 +1,9 @@
-require 'delegate'
+require_relative '../admin_statistics_digest/base_delegator'
 
-class AdminStatisticsDigest::ActiveResponderDelegator < SimpleDelegator
-
-  def date_range(date_range)
-    filters[:date_range] = date_range
-  end
+class AdminStatisticsDigest::ActiveResponderDelegator < AdminStatisticsDigest::BaseDelegator
 
   def topic_category_id(category_id)
     filters[:topic_category_id] = category_id
   end
+
 end

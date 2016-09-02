@@ -1,18 +1,10 @@
-require 'delegate'
+require_relative '../admin_statistics_digest/base_delegator'
 
-class AdminStatisticsDigest::ActiveUserDelegator < SimpleDelegator
+class AdminStatisticsDigest::ActiveUserDelegator < AdminStatisticsDigest::BaseDelegator
 
   # include Admin and Moderator user into query
   def include_staff(default = true)
     filters[:include_staff] = default
-  end
-
-  def limit(default)
-    filters[:limit] = default
-  end
-
-  def date_range(date_range)
-    filters[:date_range] = date_range
   end
 
   def signed_up_since(date)
@@ -26,4 +18,5 @@ class AdminStatisticsDigest::ActiveUserDelegator < SimpleDelegator
   def signed_up_between(from:, to:)
     filters[:signed_up_between] = { from: from.to_date, to: to.to_date}
   end
+
 end
