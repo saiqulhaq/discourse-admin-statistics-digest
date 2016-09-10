@@ -2,11 +2,9 @@ require_relative '../admin_statistics_digest/dsl_methods'
 require_relative '../admin_statistics_digest/filter'
 
 class AdminStatisticsDigest::BaseReport
-  attr_reader :xx
 
   def initialize
     @_filters = Filter.new
-    @xx = []
   end
 
   # used for DSL
