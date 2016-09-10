@@ -1,6 +1,7 @@
-require_relative './spec_helper'
+require_relative '../../spec_helper'
 
 RSpec.describe AdminStatisticsDigest::ActiveResponder do
+  subject(:active_responder) { described_class.new }
 
   # setup responds
   let!(:admin) { Fabricate(:admin) }
@@ -96,7 +97,7 @@ RSpec.describe AdminStatisticsDigest::ActiveResponder do
   end
 
   it 'returns empty array if category id is not defined' do
-    result = described_class.build {}.execute
+    result = subject.execute
     expect(result[:error]).to be_nil
     expect(result[:data]).to match_array([])
   end
@@ -104,11 +105,11 @@ RSpec.describe AdminStatisticsDigest::ActiveResponder do
   it 'exclude trashed post' do
     category = support_category
 
-    active_responder = described_class.build do
+    subject.filters do
       topic_category_id category.id
     end
 
-    result = active_responder.execute
+    result = subject.execute
 
     expect(result[:error]).to be_nil
     expect(result[:data].map {|d| d['user_id'].to_i}).to(
@@ -122,7 +123,7 @@ RSpec.describe AdminStatisticsDigest::ActiveResponder do
 
     user_with_10_replies_to_support_and_bug_category_at_3_months_ago.posts.take(5).each &:trash!
 
-    result = active_responder.execute
+    result = subject.execute
 
     expect(result[:error]).to be_nil
     expect(result[:data].map {|d| d['user_id'].to_i}).to(
@@ -137,16 +138,16 @@ RSpec.describe AdminStatisticsDigest::ActiveResponder do
 
   describe 'filter' do
     describe 'active_range filter' do
-      let(:active_responder) do
+      before do
         category = feature_category
-        described_class.build do
-          date_range 2.months.ago..Date.today
+        subject.filters do
+          between 2.months.ago..Date.today
           topic_category_id category.id
         end
       end
 
       it 'filters users based on activity of given date' do
-        result = active_responder.execute
+        result = subject.execute
         expect(result[:error]).to be_nil
         expect(result[:data].map {|d| d['user_id'].to_i }).to(
           match_array([
@@ -163,10 +164,11 @@ RSpec.describe AdminStatisticsDigest::ActiveResponder do
       it 'limits the result' do
         category = bug_category
 
-        result = described_class.build do
+        subject.filters do
           topic_category_id category.id
           limit 2
-        end.execute
+        end
+        result = subject.execute
 
         expect(result[:error]).to be_nil
         expect(result[:data].map {|d| d['user_id'].to_i}).to(

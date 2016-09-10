@@ -1,6 +1,7 @@
-require_relative './spec_helper'
+require_relative '../../spec_helper'
 
 RSpec.describe AdminStatisticsDigest::ActiveUser do
+  subject(:active_user) { described_class.new }
 
   # setup user
   let!(:user_with_5_topics_and_5_posts_at_80_days_ago) do
@@ -41,7 +42,6 @@ RSpec.describe AdminStatisticsDigest::ActiveUser do
       end
     end
   end
-
 
   let!(:user_with_8_posts_at_5_days_ago) do
     topic = Topic.last
@@ -95,12 +95,12 @@ RSpec.describe AdminStatisticsDigest::ActiveUser do
 
   context 'no filter given' do
     let! :result do
-      described_class.build { include_staff }.execute
+      subject.execute
     end
 
-    it 'shows all users sorted by topics with posts, signed up date, and also including staff' do
+    it 'shows all users sorted by topics with posts, signed up date, and excluding staff' do
       expect(result[:error]).to be_nil
-      expect(result[:data].length).to eq(9)
+      expect(result[:data].length).to eq(7)
       expect(result[:data].map {|r| r['user_id'].to_i }).to(
         match_array([
                       user_with_12_topics_at_20_days_ago.id,
@@ -109,9 +109,7 @@ RSpec.describe AdminStatisticsDigest::ActiveUser do
                       user_with_10_posts_at_10_days_ago.id,
                       user_with_8_posts_at_5_days_ago.id,
                       user_with_3_topics_and_3_posts_at_50_days_ago.id,
-                      user_with_3_topics_at_3_days_ago.id,
-                      moderator_with_7_topics_at_yesterday.id,
-                      admin_with_4_topics_at_12_days_ago.id
+                      user_with_3_topics_at_3_days_ago.id
                     ]))
     end
   end
@@ -121,7 +119,8 @@ RSpec.describe AdminStatisticsDigest::ActiveUser do
     describe '#include_staff' do
       context 'value is true' do
         let! :result do
-          described_class.build { include_staff }.execute
+          subject.filters { include_staff(true) }
+          subject.execute
         end
 
         it 'includes staff users to query' do
@@ -130,11 +129,9 @@ RSpec.describe AdminStatisticsDigest::ActiveUser do
       end
 
       context 'value is false' do
-        let! :result do
-          active_user = described_class.new do
-            include_staff false
-          end
-          active_user.execute
+        let(:result) do
+          subject.filters { include_staff(false) }
+          subject.execute
         end
 
         it 'excludes staff users from query' do
@@ -143,9 +140,7 @@ RSpec.describe AdminStatisticsDigest::ActiveUser do
       end
 
       context 'include_staff filter is empty' do
-        let! :result do
-          described_class.new.execute
-        end
+        let(:result) { subject.execute }
 
         it 'exclude staff users from query as default' do
           expect(result[:data].size).to eq(7)
@@ -155,7 +150,8 @@ RSpec.describe AdminStatisticsDigest::ActiveUser do
 
     describe '#limit' do
       let! :result do
-        described_class.build { limit(3) }.execute
+        subject.filters { limit(3) }
+        subject.execute
       end
 
       it 'limits query result' do
@@ -163,12 +159,12 @@ RSpec.describe AdminStatisticsDigest::ActiveUser do
       end
     end
 
-    describe '#active_range' do
+    describe '#between' do
       let! :result do
-        described_class.build do
-          limit 3
-          date_range(80.days.ago..25.days.ago)
-        end.execute
+        subject.filters do
+          between(80.days.ago..25.days.ago)
+        end
+        subject.execute
       end
 
       it 'calculates user activity based on given date' do
@@ -185,10 +181,10 @@ RSpec.describe AdminStatisticsDigest::ActiveUser do
 
     describe '#signed_up_since' do
       let! :result do
-        described_class.build do
-          limit 5
+        subject.filters do
           signed_up_since(30.days.ago)
-        end.execute
+        end
+        subject.execute
       end
 
       it 'adjust query to select users#created_at >= given date' do
@@ -207,10 +203,11 @@ RSpec.describe AdminStatisticsDigest::ActiveUser do
 
     describe '#signed_up_between' do
       let! :result do
-        described_class.build do
-          limit 5
+        subject.filters do
+          include_staff(false)
           signed_up_between(from: 60.days.ago, to: 5.days.ago)
-        end.execute
+        end
+        subject.execute
       end
 
       it 'adjust query to select users#created_at between given date' do
@@ -221,7 +218,7 @@ RSpec.describe AdminStatisticsDigest::ActiveUser do
                         user_with_10_posts_at_10_days_ago.id,
                         user_with_5_topics_and_5_posts_at_25_days_ago.id,
                         user_with_8_posts_at_5_days_ago.id,
-                        user_with_3_topics_and_3_posts_at_50_days_ago.id
+                        user_with_3_topics_and_3_posts_at_50_days_ago.id,
                       ])
         )
       end
@@ -229,10 +226,10 @@ RSpec.describe AdminStatisticsDigest::ActiveUser do
 
     describe '#signed_up_before' do
       let! :result do
-        described_class.build do
-          limit 2
+        subject.filters do
           signed_up_before(30.days.ago)
-        end.execute
+        end
+        subject.execute
       end
 
       it 'adjust query to select users#created_at <= given date' do
