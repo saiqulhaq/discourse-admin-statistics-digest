@@ -1,7 +1,24 @@
 module AdminStatisticsDigest
 end
 
+require_relative './active_responder'
+require_relative './active_user'
+require_relative './most_replied_topic'
+require_relative './most_liked_post'
+require_relative './popular_post'
+require_relative './popular_topic'
+
 class AdminStatisticsDigest::Report
+
+  REPORTS = {
+    active_user: AdminStatisticsDigest::ActiveUser,
+    active_responder: AdminStatisticsDigest::ActiveResponder,
+    most_liked_post: AdminStatisticsDigest::MostLikedPost,
+    most_replied_topic: AdminStatisticsDigest::MostRepliedTopic,
+    popular_post: AdminStatisticsDigest::PopularPost,
+    popular_topic: AdminStatisticsDigest::PopularTopic,
+  }.freeze
+
   def self.generate(&block)
     self.new(&block)
   end
@@ -12,12 +29,14 @@ class AdminStatisticsDigest::Report
     instance_eval(&block) if block_given?
   end
 
-  def active_user(&block)
-    rows << run_query(AdminStatisticsDigest::ActiveUser.build(&block).to_sql)
-  end
+  REPORTS.each do |method_name, klass_name|
 
-  def active_responder(&block)
-    rows << run_query(AdminStatisticsDigest::ActiveResponder.build(&block).to_sql)
+    define_method(method_name.to_sym) do |&block|
+      report = klass_name.new
+      report.instance_eval(&block)
+      self.rows << report.execute
+    end
+
   end
 
   def section(name, &block)
@@ -37,26 +56,5 @@ class AdminStatisticsDigest::Report
 
   private
   attr_accessor :rows
-
-  def run_query(sql)
-    result, err = [], nil
-    begin
-      ActiveRecord::Base.connection.transaction do
-        ActiveRecord::Base.exec_sql 'SET TRANSACTION READ ONLY'
-        ActiveRecord::Base.exec_sql 'SET LOCAL statement_timeout = 10000'
-        result = ActiveRecord::Base.exec_sql(sql)
-        result.check
-
-        raise ActiveRecord::Rollback
-      end
-    rescue Exception => ex
-      err = ex
-    end
-
-    {
-      error: err,
-      data: result.entries,
-    }
-  end
 
 end
