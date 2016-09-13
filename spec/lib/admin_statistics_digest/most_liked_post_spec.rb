@@ -1,7 +1,7 @@
 require_relative '../../../spec/spec_helper'
-require_relative '../../../lib/admin_statistics_digest/liked_post'
+require_relative '../../../lib/admin_statistics_digest/most_liked_post'
 
-RSpec.describe AdminStatisticsDigest::LikedPost do
+RSpec.describe AdminStatisticsDigest::MostLikedPost do
   let(:report) { described_class.new }
 
   before(:all) { Post.delete_all }

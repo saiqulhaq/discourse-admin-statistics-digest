@@ -55,10 +55,14 @@ class Filter
     filter[:signed_up_between]
   end
 
-  def popular_by_month(month = nil)
-    filter[:popular_at] = month.beginning_of_month..month.end_of_month if month
-    filter[:popular_at]
+  def filter_by_month(month = nil)
+    filter[:filter_by_month] = month.beginning_of_month..month.end_of_month if month
+    filter[:filter_by_month]
   end
+
+  alias_method :popular_by_month, :filter_by_month
+  alias_method :most_replied_by_month, :filter_by_month
+  private :filter_by_month
 
   def method_missing(method_sym, *arguments, &block)
     if filter.respond_to?(method_sym)

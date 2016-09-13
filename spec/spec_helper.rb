@@ -6,7 +6,7 @@ end
 require 'rubygems'
 require 'spork'
 
-PLUGIN_PATH = 'plugins/discourse-admin-statistics-digest'.freeze
+PLUGIN_PATH = 'plugins/discourse-admin-statistics-digest'.freeze unless defined?(PLUGIN_PATH)
 
 Spork.prefork do
   require 'fabrication'

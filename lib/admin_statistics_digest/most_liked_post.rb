@@ -3,7 +3,7 @@ end
 
 require_relative '../admin_statistics_digest/base_report'
 
-class AdminStatisticsDigest::LikedPost < AdminStatisticsDigest::BaseReport
+class AdminStatisticsDigest::MostLikedPost < AdminStatisticsDigest::BaseReport
   provide_filter :between
   provide_filter :limit
 
