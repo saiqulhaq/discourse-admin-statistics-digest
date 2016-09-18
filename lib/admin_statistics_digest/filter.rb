@@ -12,12 +12,11 @@ class Filter
   end
 
   # @param [Range] date_range, Range of Date
-  def between(date_range)
-    raise 'Invalid date range' if !date_range.is_a?(Range) || date_range.first > date_range.last
-    filter[:date_range] = date_range
-  end
-
-  def date_range
+  def active_range(date_range = nil)
+    if date_range
+      raise 'Invalid date range' if !date_range.is_a?(Range) || date_range.first > date_range.last
+      filter[:date_range] = date_range
+    end
     return nil if filter[:date_range].nil?
     OpenStruct.new(first: filter[:date_range].first.to_date, last: filter[:date_range].last.to_date).freeze
   end

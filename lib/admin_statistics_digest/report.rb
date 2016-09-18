@@ -11,12 +11,12 @@ require_relative './popular_topic'
 class AdminStatisticsDigest::Report
 
   REPORTS = {
-    active_user: AdminStatisticsDigest::ActiveUser,
-    active_responder: AdminStatisticsDigest::ActiveResponder,
-    most_liked_post: AdminStatisticsDigest::MostLikedPost,
-    most_replied_topic: AdminStatisticsDigest::MostRepliedTopic,
-    popular_post: AdminStatisticsDigest::PopularPost,
-    popular_topic: AdminStatisticsDigest::PopularTopic,
+    active_users: AdminStatisticsDigest::ActiveUser,
+    active_responders: AdminStatisticsDigest::ActiveResponder,
+    most_liked_posts: AdminStatisticsDigest::MostLikedPost,
+    most_replied_topics: AdminStatisticsDigest::MostRepliedTopic,
+    popular_posts: AdminStatisticsDigest::PopularPost,
+    popular_topics: AdminStatisticsDigest::PopularTopic,
   }.freeze
 
   def self.generate(&block)
@@ -34,7 +34,13 @@ class AdminStatisticsDigest::Report
     define_method(method_name.to_sym) do |&block|
       report = klass_name.new
       report.instance_eval(&block)
-      self.rows << report.execute
+      result = report.execute
+      if result[:error]
+        raise result[:error]
+      else
+        self.send(:rows).push(result[:data])
+        result[:data]
+      end
     end
 
   end
@@ -51,6 +57,7 @@ class AdminStatisticsDigest::Report
   end
 
   def data
+    return rows.flatten.freeze if rows.length == 1
     rows.freeze
   end
 

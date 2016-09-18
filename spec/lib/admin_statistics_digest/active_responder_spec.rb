@@ -141,7 +141,7 @@ RSpec.describe AdminStatisticsDigest::ActiveResponder do
       before do
         category = feature_category
         subject.filters do
-          between 2.months.ago..Date.today
+          active_range 2.months.ago..Date.today
           topic_category_id category.id
         end
       end

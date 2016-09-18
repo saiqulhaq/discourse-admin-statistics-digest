@@ -5,7 +5,7 @@
 # url: https://github.com/discourse/discourse-admin-statistics-digest
 
 require_relative '../discourse-admin-statistics-digest/lib/admin_statistics_digest'
-# require_relative './app/mailers/statistics_mailer'
+require_relative '../discourse-admin-statistics-digest/app/mailers/report_mailer'
 
 after_initialize do
 

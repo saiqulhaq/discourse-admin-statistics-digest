@@ -93,6 +93,17 @@ RSpec.describe AdminStatisticsDigest::ActiveUser do
   end
   # end setup user
 
+  describe '#avaiable_filters' do
+    subject { described_class.new.available_filters }
+
+    it { is_expected.to include(:limit) }
+    it { is_expected.to include(:include_staff) }
+    it { is_expected.to include(:signed_up_between) }
+    it { is_expected.to include(:signed_up_before) }
+    it { is_expected.to include(:signed_up_since) }
+    it { is_expected.to include(:active_range) }
+  end
+
   context 'no filter given' do
     let! :result do
       subject.execute
@@ -159,10 +170,10 @@ RSpec.describe AdminStatisticsDigest::ActiveUser do
       end
     end
 
-    describe '#between' do
+    describe '#active_range' do
       let! :result do
         subject.filters do
-          between(80.days.ago..25.days.ago)
+          active_range(80.days.ago..25.days.ago)
         end
         subject.execute
       end

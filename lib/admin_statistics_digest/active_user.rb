@@ -9,7 +9,8 @@ class AdminStatisticsDigest::ActiveUser < AdminStatisticsDigest::BaseReport
   provide_filter :signed_up_since
   provide_filter :signed_up_before
   provide_filter :signed_up_between
-  provide_filter :between
+  provide_filter :active_range
+  provide_filter :limit
 
   def initialize
     super
@@ -18,15 +19,14 @@ class AdminStatisticsDigest::ActiveUser < AdminStatisticsDigest::BaseReport
 
   def to_sql
     include_staff_filter = if filters.include_staff
-                             <<~SQL
-                                AND ("admin" = true OR "moderator" = true OR "admin" = false OR "moderator" = false)
-                             SQL
+                             nil # include all users
                            else
                              <<~SQL
                                 AND ("admin" = false AND "moderator" = false)
                              SQL
                            end
 
+    # signed up since
     signed_up_after_filter = if filters.signed_up_between && !filters.signed_up_between[:to].present?
                                <<~SQL
                                  AND ("created_at" >= '#{filters.signed_up_between[:from]}')
@@ -55,24 +55,24 @@ class AdminStatisticsDigest::ActiveUser < AdminStatisticsDigest::BaseReport
                                  nil
                                end
 
-    topic_date_range_filter = if filters.date_range
+    topic_active_range_filter = if filters.active_range
                                 <<~SQL
                                   AND (
-                                    (t."created_at", t."created_at") OVERLAPS ('#{filters.date_range.first.beginning_of_day}', '#{filters.date_range.last.end_of_day}')
-                                    OR DATE(t."created_at") = '#{filters.date_range.first}'
-                                    OR DATE(t."created_at") = '#{filters.date_range.last}'
+                                    (t."created_at", t."created_at") OVERLAPS ('#{filters.active_range.first.beginning_of_day}', '#{filters.active_range.last.end_of_day}')
+                                    OR DATE(t."created_at") = '#{filters.active_range.first}'
+                                    OR DATE(t."created_at") = '#{filters.active_range.last}'
                                   )
                                 SQL
                               else
                                 nil
                               end
 
-    reply_date_range_filter = if filters.date_range
+    reply_active_range_filter = if filters.active_range
                                 <<~SQL
                                   AND (
-                                    (Reply."created_at", Reply."created_at") OVERLAPS ('#{filters.date_range.first.beginning_of_day}', '#{filters.date_range.last.end_of_day}')
-                                    OR DATE(Reply."created_at") = '#{filters.date_range.first}'
-                                    OR DATE(Reply."created_at") =  '#{filters.date_range[:last]}'
+                                    (Reply."created_at", Reply."created_at") OVERLAPS ('#{filters.active_range.first.beginning_of_day}', '#{filters.active_range.last.end_of_day}')
+                                    OR DATE(Reply."created_at") = '#{filters.active_range.first}'
+                                    OR DATE(Reply."created_at") =  '#{filters.active_range[:last]}'
                                   )
                                 SQL
                               else
@@ -95,14 +95,16 @@ class AdminStatisticsDigest::ActiveUser < AdminStatisticsDigest::BaseReport
 
              ) as u ON t."user_id" = u."user_id"
 
-             #{ topic_date_range_filter }
+             #{ topic_active_range_filter }
+             #{ signed_up_after_filter }
 
              GROUP BY u."user_id", u."username", u."name", u."signed_up_at"
           )
 
           AS ut ON ut."user_id" = Reply."user_id"  AND (Reply."topic_id" IN (SELECT "id" from "topics" WHERE("topics"."archetype" = 'regular')))
           AND (Reply."deleted_at" IS NULL)
-          #{ reply_date_range_filter }
+          #{ reply_active_range_filter }
+          #{ signed_up_after_filter }
 
           GROUP BY ut."user_id", ut."username", ut."name", ut."signed_up_at", ut."topics"
           HAVING ut."topics" + count(Reply) > 0

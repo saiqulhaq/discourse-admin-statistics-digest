@@ -57,14 +57,14 @@ RSpec.describe AdminStatisticsDigest::MostLikedPost do
     end
   end
 
-  it 'has :between, and :limit filters' do
-    expect(subject.available_filters).to match_array([:between, :limit])
+  it 'has :active_range, and :limit filters' do
+    expect(subject.available_filters).to match_array([:active_range, :limit])
   end
 
-  describe ':between filter' do
+  describe ':active_range filter' do
     it 'filtering post#created_at' do
       report.filters do
-        between 3.months.ago..2.months.ago
+        active_range 3.months.ago..2.months.ago
       end
 
       result = exec_sql(report.to_sql)
