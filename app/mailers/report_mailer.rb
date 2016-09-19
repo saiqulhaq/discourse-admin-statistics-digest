@@ -16,7 +16,8 @@ class AdminStatisticsDigest::ReportMailer < ActionMailer::Base
       popular_posts: popular_posts(current_month, limit),
       popular_topics: popular_topics(current_month, limit),
       most_liked_posts: most_liked_posts(current_month, limit),
-      most_replied_topics: most_replied_topics(current_month, limit)
+      most_replied_topics: most_replied_topics(current_month, limit),
+      active_responders: active_responders(current_month, limit)
     }
 
     @data[:report_date] = current_month.strftime('%b %Y')
@@ -99,6 +100,23 @@ class AdminStatisticsDigest::ReportMailer < ActionMailer::Base
       r.limit limit
       r.most_replied_by_month month
     end
+  end
+
+  def active_responders(month, limit)
+    result = []
+    AdminStatisticsDigest::ActiveResponder.monitored_topic_categories.each do |category_id|
+      responders = report.active_responders do |r|
+        r.limit limit
+        r.topic_category_id category_id
+        r.active_range (month - 1.month)..month
+      end
+
+      result.push({
+        category_name: Category.find(category_id).name,
+        responders: responders
+      }.with_indifferent_access)
+    end
+    result
   end
 
   def report

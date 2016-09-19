@@ -917,71 +917,39 @@
                         <table align="left" border="0" cellpadding="0" cellspacing="0" style="max-width: 100%;min-width: 100%;border-collapse: collapse;mso-table-lspace: 0pt;mso-table-rspace: 0pt;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;" width="100%" class="mcnTextContentContainer">
                           <tbody><tr>
 
-                            <td valign="top" class="mcnTextContent" style="padding-top: 0;padding-right: 18px;padding-bottom: 9px;padding-left: 18px;mso-line-height-rule: exactly;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;word-break: break-word;color: #404040;font-family: Verdana;font-size: 14px;line-height: 150%;text-align: left;">
+                            <% if @data[:active_responders].present? %>
+                                <td valign="top" class="mcnTextContent" style="padding-top: 0;padding-right: 18px;padding-bottom: 9px;padding-left: 18px;mso-line-height-rule: exactly;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;word-break: break-word;color: #404040;font-family: Verdana;font-size: 14px;line-height: 150%;text-align: left;">
 
-                              <h4 class="null" style="display: block;margin: 0;padding: 0;font-family: Verdana;font-size: 14px;font-style: normal;font-weight: normal;line-height: 125%;letter-spacing: normal;text-align: left;color: #C52E26 !important;"><strong><a href="https://meta.discourse.org/c/support" target="_blank" style="mso-line-height-rule: exactly;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;color: #C52E26;font-weight: normal;text-decoration: none;">#Support Category</a></strong></h4>
+                                  <%- @data[:active_responders].each do |category| %>
+                                      <h4 class="null" style="display: block;margin: 0;padding: 0;font-family: Verdana;font-size: 14px;font-style: normal;font-weight: normal;line-height: 125%;letter-spacing: normal;text-align: left;color: #C52E26 !important;">
+                                        <strong>
+                                          <a href="https://meta.discourse.org/c/support" target="_blank" style="mso-line-height-rule: exactly;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;color: #C52E26;font-weight: normal;text-decoration: none;">#<%= category['category_name'] %></a>
+                                        </strong>
+                                      </h4>
+                                        <% if category['responders'].present? %>
+                                          <ol>
+                                            <%- category['responders'].each do |user| %>
+                                                <li style="mso-line-height-rule: exactly;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;">
+                                                  <h3 style="text-align: left;display: block;margin: 0;padding: 0;font-family: Georgia;font-size: 14px;font-style: normal;font-weight: normal;line-height: 125%;letter-spacing: normal;color: #202020 !important;">
+                                                    <a href="<%= "#{Discourse.base_url}/users/#{user['username']}" %>" target="_blank" style="mso-line-height-rule: exactly;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;color: #C52E26;font-weight: normal;text-decoration: none;">
+                                                      <%= user['username'] %>
+                                                    </a>
+                                                    &nbsp;- <%= user['name'] %>
+                                                  </h3>
+                                                </li>
+                                            <% end %>
+                                          </ol>
+                                        <% else %>
+                                          <ul>
+                                            <li>No data yet</li>
+                                          </ul>
+                                        <% end %>
+                                  <% end %>
 
-                              <ol>
-                                <li style="mso-line-height-rule: exactly;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;">
-                                  <h3 style="text-align: left;display: block;margin: 0;padding: 0;font-family: Georgia;font-size: 14px;font-style: normal;font-weight: normal;line-height: 125%;letter-spacing: normal;color: #202020 !important;"><a href="https://meta.discourse.org/users/Tom_Newsom" target="_blank" style="mso-line-height-rule: exactly;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;color: #C52E26;font-weight: normal;text-decoration: none;">fefrei</a>&nbsp;- Felix Freiberger</h3>
-                                </li>
-                                <li style="mso-line-height-rule: exactly;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;">
-                                  <h3 style="text-align: left;display: block;margin: 0;padding: 0;font-family: Georgia;font-size: 14px;font-style: normal;font-weight: normal;line-height: 125%;letter-spacing: normal;color: #202020 !important;"><a href="https://meta.discourse.org/users/Tom_Newsom" target="_blank" style="mso-line-height-rule: exactly;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;color: #C52E26;font-weight: normal;text-decoration: none;">Falco</a>&nbsp;- Rafael dos Santos Silva</h3>
-                                </li>
-                                <li style="mso-line-height-rule: exactly;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;">
-                                  <h3 style="text-align: left;display: block;margin: 0;padding: 0;font-family: Georgia;font-size: 14px;font-style: normal;font-weight: normal;line-height: 125%;letter-spacing: normal;color: #202020 !important;"><a href="https://meta.discourse.org/users/Tom_Newsom" target="_blank" style="mso-line-height-rule: exactly;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;color: #C52E26;font-weight: normal;text-decoration: none;">DeanMarkTaylor</a>&nbsp;-&nbsp;Dean Taylor</h3>
-                                </li>
-                                <li style="mso-line-height-rule: exactly;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;">
-                                  <h3 style="text-align: left;display: block;margin: 0;padding: 0;font-family: Georgia;font-size: 14px;font-style: normal;font-weight: normal;line-height: 125%;letter-spacing: normal;color: #202020 !important;"><a data-user-card="jomaxro" href="https://meta.discourse.org/users/jomaxro" style="mso-line-height-rule: exactly;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;color: #C52E26;font-weight: normal;text-decoration: none;">jomaxro</a>&nbsp;- Joshua Rosenfeld</h3>
-                                </li>
-                                <li style="mso-line-height-rule: exactly;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;">
-                                  <h3 style="text-align: left;display: block;margin: 0;padding: 0;font-family: Georgia;font-size: 14px;font-style: normal;font-weight: normal;line-height: 125%;letter-spacing: normal;color: #202020 !important;"><a data-user-card="alehandrof" href="https://meta.discourse.org/users/alehandrof" style="mso-line-height-rule: exactly;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;color: #C52E26;font-weight: normal;text-decoration: none;">alehandrof</a>&nbsp;- Alex Armstrong</h3>
-                                </li>
-                              </ol>
-                              &nbsp;
-
-                              <h4 class="null" style="display: block;margin: 0;padding: 0;font-family: Verdana;font-size: 14px;font-style: normal;font-weight: normal;line-height: 125%;letter-spacing: normal;text-align: left;color: #C52E26 !important;"><strong><a href="https://meta.discourse.org/c/support" target="_blank" style="mso-line-height-rule: exactly;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;color: #C52E26;font-weight: normal;text-decoration: none;">#Bug Category</a></strong></h4>
-
-                              <ol>
-                                <li style="mso-line-height-rule: exactly;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;">
-                                  <h3 style="text-align: left;display: block;margin: 0;padding: 0;font-family: Georgia;font-size: 14px;font-style: normal;font-weight: normal;line-height: 125%;letter-spacing: normal;color: #202020 !important;"><a href="https://meta.discourse.org/users/Tom_Newsom" target="_blank" style="mso-line-height-rule: exactly;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;color: #C52E26;font-weight: normal;text-decoration: none;">fefrei</a>&nbsp;- Felix Freiberger</h3>
-                                </li>
-                                <li style="mso-line-height-rule: exactly;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;">
-                                  <h3 style="text-align: left;display: block;margin: 0;padding: 0;font-family: Georgia;font-size: 14px;font-style: normal;font-weight: normal;line-height: 125%;letter-spacing: normal;color: #202020 !important;"><a href="https://meta.discourse.org/users/Tom_Newsom" target="_blank" style="mso-line-height-rule: exactly;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;color: #C52E26;font-weight: normal;text-decoration: none;">Falco</a>&nbsp;- Rafael dos Santos Silva</h3>
-                                </li>
-                                <li style="mso-line-height-rule: exactly;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;">
-                                  <h3 style="text-align: left;display: block;margin: 0;padding: 0;font-family: Georgia;font-size: 14px;font-style: normal;font-weight: normal;line-height: 125%;letter-spacing: normal;color: #202020 !important;"><a href="https://meta.discourse.org/users/Tom_Newsom" target="_blank" style="mso-line-height-rule: exactly;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;color: #C52E26;font-weight: normal;text-decoration: none;">DeanMarkTaylor</a>&nbsp;-&nbsp;Dean Taylor</h3>
-                                </li>
-                                <li style="mso-line-height-rule: exactly;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;">
-                                  <h3 style="text-align: left;display: block;margin: 0;padding: 0;font-family: Georgia;font-size: 14px;font-style: normal;font-weight: normal;line-height: 125%;letter-spacing: normal;color: #202020 !important;"><a data-user-card="jomaxro" href="https://meta.discourse.org/users/jomaxro" style="mso-line-height-rule: exactly;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;color: #C52E26;font-weight: normal;text-decoration: none;">jomaxro</a>&nbsp;- Joshua Rosenfeld</h3>
-                                </li>
-                                <li style="mso-line-height-rule: exactly;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;">
-                                  <h3 style="text-align: left;display: block;margin: 0;padding: 0;font-family: Georgia;font-size: 14px;font-style: normal;font-weight: normal;line-height: 125%;letter-spacing: normal;color: #202020 !important;"><a data-user-card="alehandrof" href="https://meta.discourse.org/users/alehandrof" style="mso-line-height-rule: exactly;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;color: #C52E26;font-weight: normal;text-decoration: none;">alehandrof</a>&nbsp;- Alex Armstrong</h3>
-                                </li>
-                              </ol>
-                              &nbsp;
-
-                              <h4 class="null" style="display: block;margin: 0;padding: 0;font-family: Verdana;font-size: 14px;font-style: normal;font-weight: normal;line-height: 125%;letter-spacing: normal;text-align: left;color: #C52E26 !important;"><strong><a href="https://meta.discourse.org/c/support" target="_blank" style="mso-line-height-rule: exactly;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;color: #C52E26;font-weight: normal;text-decoration: none;">#Feature Category</a></strong></h4>
-
-                              <ol>
-                                <li style="mso-line-height-rule: exactly;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;">
-                                  <h3 style="text-align: left;display: block;margin: 0;padding: 0;font-family: Georgia;font-size: 14px;font-style: normal;font-weight: normal;line-height: 125%;letter-spacing: normal;color: #202020 !important;"><a href="https://meta.discourse.org/users/Tom_Newsom" target="_blank" style="mso-line-height-rule: exactly;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;color: #C52E26;font-weight: normal;text-decoration: none;">fefrei</a>&nbsp;- Felix Freiberger</h3>
-                                </li>
-                                <li style="mso-line-height-rule: exactly;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;">
-                                  <h3 style="text-align: left;display: block;margin: 0;padding: 0;font-family: Georgia;font-size: 14px;font-style: normal;font-weight: normal;line-height: 125%;letter-spacing: normal;color: #202020 !important;"><a href="https://meta.discourse.org/users/Tom_Newsom" target="_blank" style="mso-line-height-rule: exactly;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;color: #C52E26;font-weight: normal;text-decoration: none;">Falco</a>&nbsp;- Rafael dos Santos Silva</h3>
-                                </li>
-                                <li style="mso-line-height-rule: exactly;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;">
-                                  <h3 style="text-align: left;display: block;margin: 0;padding: 0;font-family: Georgia;font-size: 14px;font-style: normal;font-weight: normal;line-height: 125%;letter-spacing: normal;color: #202020 !important;"><a href="https://meta.discourse.org/users/Tom_Newsom" target="_blank" style="mso-line-height-rule: exactly;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;color: #C52E26;font-weight: normal;text-decoration: none;">DeanMarkTaylor</a>&nbsp;-&nbsp;Dean Taylor</h3>
-                                </li>
-                                <li style="mso-line-height-rule: exactly;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;">
-                                  <h3 style="text-align: left;display: block;margin: 0;padding: 0;font-family: Georgia;font-size: 14px;font-style: normal;font-weight: normal;line-height: 125%;letter-spacing: normal;color: #202020 !important;"><a data-user-card="jomaxro" href="https://meta.discourse.org/users/jomaxro" style="mso-line-height-rule: exactly;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;color: #C52E26;font-weight: normal;text-decoration: none;">jomaxro</a>&nbsp;- Joshua Rosenfeld</h3>
-                                </li>
-                                <li style="mso-line-height-rule: exactly;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;">
-                                  <h3 style="text-align: left;display: block;margin: 0;padding: 0;font-family: Georgia;font-size: 14px;font-style: normal;font-weight: normal;line-height: 125%;letter-spacing: normal;color: #202020 !important;"><a data-user-card="alehandrof" href="https://meta.discourse.org/users/alehandrof" style="mso-line-height-rule: exactly;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;color: #C52E26;font-weight: normal;text-decoration: none;">alehandrof</a>&nbsp;- Alex Armstrong</h3>
-                                </li>
-                              </ol>
-
-                            </td>
+                                </td>
+                            <% else %>
+                                <td valign="top" class="mcnTextContent" style="padding-top: 0;padding-right: 18px;padding-bottom: 9px;padding-left: 18px;mso-line-height-rule: exactly;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;word-break: break-word;color: #404040;font-family: Verdana;font-size: 14px;line-height: 150%;text-align: left;">No data yet</td>
+                            <% end %>
                           </tr>
                           </tbody></table>
                         <!--[if mso]>
