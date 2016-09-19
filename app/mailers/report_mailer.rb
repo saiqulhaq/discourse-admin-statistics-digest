@@ -14,9 +14,9 @@ class AdminStatisticsDigest::ReportMailer < ActionMailer::Base
       top_non_staff_users: top_non_staff_users(current_month, limit),
       demoted_regulars_this_month: demoted_regulars_this_month(current_month, limit),
       popular_posts: popular_posts(current_month, limit),
-      popular_topics: popular_topics(current_month, limit)
-      # most_liked_posts: most_liked_posts(current_month, limit),
-      # most_replied_topics: popular_topics(current_month, limit)
+      popular_topics: popular_topics(current_month, limit),
+      most_liked_posts: most_liked_posts(current_month, limit),
+      most_replied_topics: most_replied_topics(current_month, limit)
     }
 
     @data[:report_date] = current_month.strftime('%b %Y')
@@ -95,7 +95,7 @@ class AdminStatisticsDigest::ReportMailer < ActionMailer::Base
   end
 
   def most_replied_topics(month, limit)
-    report.most_replied_topic do |r|
+    report.most_replied_topics do |r|
       r.limit limit
       r.most_replied_by_month month
     end
