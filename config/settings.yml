@@ -1,0 +1,3 @@
+plugins:
+  admin_statistics_digest:
+      default: true

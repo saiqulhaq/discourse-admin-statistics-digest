@@ -1,0 +1,29 @@
+<div class="form-horizontal settings">
+
+    <h3>Send email test for last 30 days</h3>
+    <button>Send</button>
+
+    <hr>
+
+    <h3>Set the timeout</h3>
+
+    <hr>
+
+    <div class="content-list">
+        <h3>Select which categories that you want to included in Active Responders report</h3>
+
+        <ul>
+          {{#each category in model}}
+              <li>
+                  <a href="#" {{actions select}}>
+                      <label for="{{category.name}}">
+                          <input type="checkbox">
+                        {{category.name}}
+                      </label>
+                  </a>
+              </li>
+          {{/each}}
+        </ul>
+    </div>
+
+</div>
