@@ -1,0 +1,29 @@
+<div class="form-horizontal settings">
+
+    <h3>Send email test for last 30 days <button>Send</button></h3>
+
+    <br>
+    <hr>
+    <br>
+
+    <h3>Set the timeout</h3>
+
+    <div class="content-list">
+        <h3>Select which categories that will be included in <b>Active Responders</b> report</h3>
+
+        <ul>
+          {{#each category in arrangedContent itemController='adminStatisticsDigestCategory'}}
+              <li>
+                  <a href="#" {{action 'select' category.model}}>
+                      <label for="{{category.model.name}}">
+                        {{input type="checkbox" checked=category.model.selected}}
+                        {{category.model.name}}
+                      </label>
+                  </a>
+              </li>
+          {{/each}}
+        </ul>
+
+    </div>
+
+</div>
