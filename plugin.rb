@@ -23,7 +23,8 @@ after_initialize do
     end
   end
 
-  # Selected categories will be used by Active Responders report
+  load File.expand_path('../../discourse-admin-statistics-digest/app/models/active_responder_category.rb', __FILE__)
+
   require_dependency 'application_controller'
   require 'sidekiq/scheduler'
 
@@ -31,12 +32,15 @@ after_initialize do
     requires_plugin AdminStatisticsDigest.plugin_name
 
     def index
-      categories = Category.all
-      render_serialized categories, AdminStatisticsDigest::CategorySerializer, root: 'model'
+      render json: AdminStatisticsDigest::ActiveResponderCategory.all.to_json
     end
 
-    def select
-      render json: { hello: false }
+    def toggle
+      if AdminStatisticsDigest::ActiveResponderCategory.toggle_selection(params.require(:id).to_i)
+        render json: AdminStatisticsDigest::ActiveResponderCategory.all.to_json
+      else
+        render json: {}, status: 422
+      end
     end
   end
 
@@ -49,13 +53,9 @@ after_initialize do
     end
   end
 
-  class AdminStatisticsDigest::CategorySerializer < ActiveModel::Serializer
-    attributes :id, :name, :color
-  end
-
   AdminStatisticsDigest::Engine.routes.draw do
     get 'categories', to: 'categories#index'
-    get 'categories/select', to: 'categories#select'
+    put 'categories/(:id)/toggle', to: 'categories#toggle'
   end
 
   Discourse::Application.routes.append do

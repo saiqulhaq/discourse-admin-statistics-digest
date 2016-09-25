@@ -1,17 +1,25 @@
+import { ajax } from 'discourse/lib/ajax';
+
 export default Discourse.Route.extend({
-  controllerName: 'admin-statistics-digest',
+  controllerName: 'adminStatisticsDigestCategories',
 
   model() {
-    const p1 = Discourse.ajax('/admin/plugins/admin-statistics-digest/categories.json', {cache: true});
-    return p1.then(model => model);
+    return ajax('/admin/plugins/admin-statistics-digest/categories.json').then(model => model);
   },
 
   setupController: function(controller, model) {
-    controller.setProperties(model);
+    controller.set('model', model);
   },
 
   renderTemplate: function() {
-    this.render('adminStatisticsDigest');
+    this.render('adminStatisticsDigestSetting');
   },
+
+  actions: {
+    toggleSelectedCategory(category) {
+      ajax(`/admin/plugins/admin-statistics-digest/categories/${category.id}/toggle.json`, { type: 'put'})
+        .then(model => model).then(() => this.refresh());
+    }
+  }
 });
 
