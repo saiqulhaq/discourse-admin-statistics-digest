@@ -6,12 +6,9 @@ require_relative '../admin_statistics_digest/base_report'
 class AdminStatisticsDigest::ActiveResponder < AdminStatisticsDigest::BaseReport
   class << self
     def monitored_topic_categories
-      PluginStore.get(AdminStatisticsDigest.plugin_name, 'active_responder-monitored_categories')
-    end
-
-    # @params categories Array of Category#id
-    def monitored_topic_categories=(categories)
-      PluginStore.set(AdminStatisticsDigest.plugin_name, 'active_responder-monitored_categories', categories)
+      AdminStatisticsDigest::ActiveResponderCategory.all.select do |c|
+        c.selected
+      end.map {|c| c.id}
     end
   end
 

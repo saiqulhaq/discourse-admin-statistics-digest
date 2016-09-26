@@ -1,5 +1,4 @@
 require_dependency 'plugin_store'
-require_relative '../../lib/admin_statistics_digest'
 
 class AdminStatisticsDigest::ActiveResponderCategory
   PS_KEY_NAME = 'active_responder'.freeze

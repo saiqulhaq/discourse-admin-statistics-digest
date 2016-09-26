@@ -1,6 +1,3 @@
-module AdminStatisticsDigest
-end
-
 require_relative './active_responder'
 require_relative './active_user'
 require_relative './most_replied_topic'

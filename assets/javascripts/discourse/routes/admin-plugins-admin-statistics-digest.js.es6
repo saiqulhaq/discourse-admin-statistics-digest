@@ -1,14 +1,15 @@
 import { ajax } from 'discourse/lib/ajax';
 
+const baseUrl = '/admin/plugins/admin-statistics-digest';
 export default Discourse.Route.extend({
-  controllerName: 'adminStatisticsDigestCategories',
+  controllerName: 'adminStatisticsDigestSetting',
 
   model() {
     return ajax('/admin/plugins/admin-statistics-digest/categories.json').then(model => model);
   },
 
   setupController: function(controller, model) {
-    controller.set('model', model);
+    this.controllerFor('adminStatisticsDigestCategories').set('model', model)
   },
 
   renderTemplate: function() {
@@ -17,8 +18,11 @@ export default Discourse.Route.extend({
 
   actions: {
     toggleSelectedCategory(category) {
-      ajax(`/admin/plugins/admin-statistics-digest/categories/${category.id}/toggle.json`, { type: 'put'})
-        .then(model => model).then(() => this.refresh());
+      ajax(`${baseUrl}/categories/${category.id}/toggle.json`, { type: 'put'})
+        .then(() => this.refresh());
+    },
+    requestPreviewEmail() {
+      ajax(`${baseUrl}/report-scheduler/preview.json`)
     }
   }
 });
