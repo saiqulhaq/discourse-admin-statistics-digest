@@ -3,6 +3,8 @@ require 'ostruct'
 class Filter
   attr_accessor :filter
 
+  class FilterError < StandardError; end
+
   def initialize
     @filter = OpenStruct.new
   end
@@ -14,7 +16,7 @@ class Filter
   # @param [Range] date_range, Range of Date
   def active_range(date_range = nil)
     if date_range
-      raise 'Invalid date range' if !date_range.is_a?(Range) || date_range.first > date_range.last
+      raise(FilterError, 'Invalid date range') if !date_range.is_a?(Range) || date_range.first > date_range.last
       filter[:date_range] = date_range
     end
     return nil if filter[:date_range].nil?
@@ -59,8 +61,16 @@ class Filter
     filter[:filter_by_month]
   end
 
+  def filter_by_date(first_date = nil, last_date = nil)
+    filter[:filter_by_month] = first_date..last_date if first_date && last_date
+    filter[:filter_by_month]
+  end
+
   alias_method :popular_by_month, :filter_by_month
+  alias_method :popular_by_date, :filter_by_date
+
   alias_method :most_replied_by_month, :filter_by_month
+  alias_method :most_replied_by_date, :filter_by_date
   private :filter_by_month
 
   def method_missing(method_sym, *arguments, &block)

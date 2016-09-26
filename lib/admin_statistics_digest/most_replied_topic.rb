@@ -5,6 +5,7 @@ require_relative '../admin_statistics_digest/base_report'
 
 class AdminStatisticsDigest::MostRepliedTopic < AdminStatisticsDigest::BaseReport
   provide_filter :most_replied_by_month
+  provide_filter :most_replied_by_date
   provide_filter :limit
 
   def to_sql

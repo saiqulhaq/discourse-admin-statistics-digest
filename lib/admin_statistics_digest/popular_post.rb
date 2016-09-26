@@ -5,6 +5,7 @@ require_relative '../admin_statistics_digest/base_report'
 
 class AdminStatisticsDigest::PopularPost < AdminStatisticsDigest::BaseReport
   provide_filter :popular_by_month
+  provide_filter :popular_by_date
   provide_filter :limit
 
   def initialize
