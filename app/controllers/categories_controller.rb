@@ -8,8 +8,8 @@ class AdminStatisticsDigest::CategoriesController < ApplicationController
     render json: AdminStatisticsDigest::ActiveResponderCategory.all.to_json
   end
 
-  def toggle
-    if AdminStatisticsDigest::ActiveResponderCategory.toggle_selection(params.require(:id).to_i)
+  def update
+    if AdminStatisticsDigest::ActiveResponderCategory.update_categories(params.require(:categories))
       render json: AdminStatisticsDigest::ActiveResponderCategory.all.to_json
     else
       render json: {}, status: 422

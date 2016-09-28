@@ -6,7 +6,12 @@ class AdminStatisticsDigest::ReportSchedulerController < ApplicationController
     render json: { success: true }
   end
 
-  def set_time_out
-    render json: { hello: false }
+  def get_timeout
+    render json: AdminStatisticsDigest::EmailTimeout.get
+  end
+
+  def set_timeout
+    succeed = AdminStatisticsDigest::EmailTimeout.set(params.require(:day).to_i, params.require(:hour).to_i, params.require(:min).to_i)
+    render json: { success: succeed }
   end
 end

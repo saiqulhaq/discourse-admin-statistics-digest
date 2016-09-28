@@ -6,18 +6,6 @@ class AdminStatisticsDigest::ActiveResponderCategory
   class << self
     Item = Struct.new(:id, :name, :selected)
 
-    def toggle_selection(category_id)
-      category = find(category_id)
-      selected_cats = Set.new(PluginStore.get(AdminStatisticsDigest.plugin_name, PS_KEY_NAME))
-      if category.selected
-        selected_cats.delete(category.id)
-        PluginStore.set(AdminStatisticsDigest.plugin_name, PS_KEY_NAME, selected_cats.to_a)
-      else
-        selected_cats.add(category.id)
-        PluginStore.set(AdminStatisticsDigest.plugin_name, PS_KEY_NAME, selected_cats.to_a)
-      end
-    end
-
     def all
       selected_cats = PluginStore.get(AdminStatisticsDigest.plugin_name, PS_KEY_NAME).to_a
       Category.pluck(:id, :name).map  do |c|
@@ -34,5 +22,17 @@ class AdminStatisticsDigest::ActiveResponderCategory
       end
     end
 
+    def update_categories(categories)
+      categories.map! { |c| c.to_i }
+      selected_categories = []
+      all.map do |cat|
+        if categories.include?(cat.id)
+          selected_categories.push(cat.id)
+        end
+      end
+
+      PluginStore.set(AdminStatisticsDigest.plugin_name, PS_KEY_NAME, selected_categories)
+    end
   end
+
 end

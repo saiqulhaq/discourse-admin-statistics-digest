@@ -5,11 +5,15 @@ export default Discourse.Route.extend({
   controllerName: 'adminStatisticsDigestSetting',
 
   model() {
-    return ajax('/admin/plugins/admin-statistics-digest/categories.json').then(model => model);
+    return Ember.RSVP.hash({
+      categories: ajax(`${baseUrl}/categories.json`).then(model => model),
+      emailSetting: ajax(`${baseUrl}/report-scheduler/timeout.json`).then(model => model)
+    });
   },
 
   setupController: function(controller, model) {
-    this.controllerFor('adminStatisticsDigestCategories').set('model', model)
+    this.controllerFor('adminStatisticsDigestCategories').set('model', model.categories);
+    this.controllerFor('adminStatisticsDigestEmailSetting').set('model', model.emailSetting);
   },
 
   renderTemplate: function() {
@@ -18,11 +22,25 @@ export default Discourse.Route.extend({
 
   actions: {
     toggleSelectedCategory(category) {
-      ajax(`${baseUrl}/categories/${category.id}/toggle.json`, { type: 'put'})
-        .then(() => this.refresh());
+      var model = this.controllerFor('adminStatisticsDigestCategories').get('model');
+      model.removeObject(category);
+      Ember.set(category, 'selected', !category.selected);
+      model.pushObject(category);
+      this.controllerFor('adminStatisticsDigestCategories').set('model', model);
+    },
+    saveSelectedCategory(model) {
+      var data = model.filter(function(e) { return e.selected == true }).mapBy('id');
+      ajax(`${baseUrl}/categories/update.json`, { type: 'put', data: {categories: data} }).then(() => this.refresh());
     },
     requestPreviewEmail() {
       ajax(`${baseUrl}/report-scheduler/preview.json`)
+    },
+    setEmailTimeout(timeOut) {
+      ajax(`${baseUrl}/report-scheduler/timeout.json`, { type: 'put', data: timeOut }).then((res) => {
+        if(!res.success) {
+          alert('Failed to update the email send out time')
+        }
+      })
     }
   }
 });
