@@ -1,6 +1,3 @@
-module AdminStatisticsDigest
-end
-
 require_relative '../admin_statistics_digest/base_report'
 
 class AdminStatisticsDigest::PopularTopic < AdminStatisticsDigest::BaseReport

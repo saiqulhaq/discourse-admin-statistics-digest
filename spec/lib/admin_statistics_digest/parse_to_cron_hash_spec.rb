@@ -1,3 +1,4 @@
+require_relative '../../spec_helper'
 require_relative '../../../lib/admin_statistics_digest/parse_to_cron_hash'
 
 RSpec.describe AdminStatisticsDigest::ParseToCronHash do

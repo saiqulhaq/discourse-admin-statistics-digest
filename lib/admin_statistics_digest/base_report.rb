@@ -1,4 +1,3 @@
-require_relative '../admin_statistics_digest/dsl_methods'
 require_relative '../admin_statistics_digest/filter'
 
 class AdminStatisticsDigest::BaseReport
