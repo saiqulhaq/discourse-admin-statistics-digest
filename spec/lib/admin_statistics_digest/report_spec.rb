@@ -1,4 +1,5 @@
 require_relative '../../spec_helper'
+require_relative '../../../lib/admin_statistics_digest/report'
 
 RSpec.describe AdminStatisticsDigest::Report do
 

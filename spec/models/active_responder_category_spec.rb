@@ -1,4 +1,4 @@
-require 'rails_helper'
+require_relative '../spec_helper'
 require_relative '../../app/models/active_responder_category'
 
 RSpec.describe AdminStatisticsDigest::ActiveResponderCategory do
@@ -19,18 +19,16 @@ RSpec.describe AdminStatisticsDigest::ActiveResponderCategory do
       end
     end
 
-    describe '#toggle_selection' do
-      it 'inverse the .selected value of an item category' do
-        category = described_class.find(categories.last.id)
-        expect(category.selected).to be_falsey
+    describe '#update_categories' do
+      it 'updates selected categories' do
+        expect(categories.length).to eq(3)
 
-        described_class.toggle_selection(category.id)
-        category = described_class.find(category.id)
-        expect(category.selected).to be_truthy
-
-        described_class.toggle_selection(category.id)
-        category = described_class.find(category.id)
-        expect(category.selected).to be_falsey
+        selected_categories = categories.last(2).map &:id
+        described_class.update_categories(selected_categories)
+        selected_categories.each do |c|
+          expect(described_class.find(c).selected).to be_truthy
+        end
+        expect(described_class.find(categories.first.id).selected).to be_falsey
       end
     end
   end

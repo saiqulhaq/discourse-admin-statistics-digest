@@ -1,4 +1,5 @@
 require_relative '../../spec_helper'
+require_relative '../../../lib/admin_statistics_digest/active_responder'
 
 RSpec.describe AdminStatisticsDigest::ActiveResponder do
   subject(:active_responder) { described_class.new }

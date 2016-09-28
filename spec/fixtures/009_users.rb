@@ -1,3 +1,8 @@
+User.delete_all
+UserStat.delete_all
+UserOption.delete_all
+UserProfile.delete_all
+
 User.seed do |u|
   u.id = -1
   u.name = 'system'

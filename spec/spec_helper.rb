@@ -123,8 +123,9 @@ Spork.prefork do
 
 end
 
+require_relative '../../discourse-admin-statistics-digest/lib/admin_statistics_digest'
+
 Spork.each_run do
   Discourse.after_fork
-  require_relative '../../discourse-admin-statistics-digest/lib/admin_statistics_digest'
 end
 

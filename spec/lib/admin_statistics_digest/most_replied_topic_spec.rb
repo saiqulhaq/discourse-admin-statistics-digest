@@ -83,8 +83,8 @@ RSpec.describe AdminStatisticsDigest::MostRepliedTopic do
                   ].flatten))
   end
 
-  it 'has :most_replied_by_month, and :limit filters' do
-    expect(subject.available_filters).to match_array([:most_replied_by_month, :limit])
+  it 'has :most_replied_by_month, :most_replied_by_date, and :limit filters' do
+    expect(subject.available_filters).to match_array([:most_replied_by_month, :most_replied_by_date, :limit])
   end
 
   describe ':most_replied_by_month filter' do
