@@ -10,16 +10,15 @@ class AdminStatisticsDigest::EmailTimeout
       timeout = PluginStore.get(AdminStatisticsDigest.plugin_name, PS_KEY_NAME)
       return timeout if timeout
 
-      PluginStore.set(AdminStatisticsDigest.plugin_name, PS_KEY_NAME, DEFAULT_TIMEOUT)
-      DEFAULT_TIMEOUT
+      PluginStore.set(AdminStatisticsDigest.plugin_name, PS_KEY_NAME, DEFAULT_TIMEOUT).tap do |is_true|
+        is_true ? DEFAULT_TIMEOUT : ''
+      end
     end
 
     def set(day, hour, min)
       PluginStore.set(AdminStatisticsDigest.plugin_name, PS_KEY_NAME, {
-        day: day,
-        hour: hour,
-        min: min
-      })
+        day: day, hour: hour, min: min
+      }).tap {|is_true| AdminStatisticsDigest.reload_digest_report_schedule if is_true }
     end
   end
 

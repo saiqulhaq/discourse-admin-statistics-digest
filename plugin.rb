@@ -37,6 +37,26 @@ after_initialize do
   load File.expand_path('../../discourse-admin-statistics-digest/app/controllers/categories_controller.rb', __FILE__)
   load File.expand_path('../../discourse-admin-statistics-digest/app/controllers/report_scheduler_controller.rb', __FILE__)
 
+  # jobs
+  if Rails.env.development? || (defined?(Rails::Server) || defined?(Unicorn) || defined?(Puma))
+    require 'sidekiq/scheduler'
+
+
+    load File.expand_path('../../discourse-admin-statistics-digest/app/jobs/admin_statistics_digest.rb', __FILE__)
+
+    Sidekiq.configure_server do |config|
+
+      Sidekiq::Scheduler.enabled = true
+      Sidekiq::Scheduler.dynamic = true
+
+      config.on(:startup) do
+        AdminStatisticsDigest.reload_digest_report_schedule
+      end
+
+    end
+  end
+
+
   AdminStatisticsDigest::Engine.routes.draw do
     root to: 'categories#root'
     get 'categories', to: 'categories#index'
