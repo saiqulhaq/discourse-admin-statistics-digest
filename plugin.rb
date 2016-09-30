@@ -1,8 +1,8 @@
 # name: discourse-admin-statistics-digest
-# about: Site summary report for admin
-# version: 0.1
-# authors: Discourse
-# url: https://github.com/discourse/discourse-admin-statistics-digest
+# about: Site digest report for admin
+# version: 0.9-beta
+# authors: Saiqul Haq
+# url: https://github.com/saiqulhaq/discourse-admin-statistics-digest
 
 
 enabled_site_setting :admin_statistics_digest
