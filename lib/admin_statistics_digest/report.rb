@@ -1,47 +1,64 @@
-module AdminStatisticsDigest
-  class Report
+require_relative './active_responder'
+require_relative './active_user'
+require_relative './most_replied_topic'
+require_relative './most_liked_post'
+require_relative './popular_post'
+require_relative './popular_topic'
 
-    # @param [Hash] filters the options to filter query and set active specs.
-    #   @option filter [Date or Time] :signed_up_from (optional)
-    #   @option filter [Ranged of Date or Time] :signed_up_between (optional)
-    #   @option filter [Boolean] :include_staff default false
-    # @return [Hash]
-    #   error: Exception,
-    #   data: PG::Result,
-    #   duration: Time in nanoseconds
-    def active_users(filters = {})
-      specs = AdminStatisticsDigest::Specs::ActiveUser.new
+class AdminStatisticsDigest::Report
 
-      specs.reset
-      specs.add(specs.class::TOPICS)
-      specs.add(specs.class::REPLIES)
+  REPORTS = {
+    active_users: AdminStatisticsDigest::ActiveUser,
+    active_responders: AdminStatisticsDigest::ActiveResponder,
+    most_liked_posts: AdminStatisticsDigest::MostLikedPost,
+    most_replied_topics: AdminStatisticsDigest::MostRepliedTopic,
+    popular_posts: AdminStatisticsDigest::PopularPost,
+    popular_topics: AdminStatisticsDigest::PopularTopic,
+  }.freeze
 
-      sql = specs.to_sql(filters)
-
-      # copied from dicourse-data-explorer plugin for safety
-      time_start, time_end, err, result = nil
-      begin
-        ActiveRecord::Base.connection.transaction do
-          ActiveRecord::Base.exec_sql 'SET TRANSACTION READ ONLY'
-          ActiveRecord::Base.exec_sql 'SET LOCAL statement_timeout = 10000'
-          time_start = Time.now
-          result = ActiveRecord::Base.exec_sql(sql)
-          result.check
-          time_end = Time.now
-
-          raise ActiveRecord::Rollback
-        end
-      rescue Exception => ex
-        err = ex
-        time_end = Time.now
-      end
-
-      {
-        error: err,
-        data: result,
-        duration: time_end - time_start
-      }
-    end
+  def self.generate(&block)
+    self.new(&block)
   end
-end
 
+  def initialize(&block)
+    self.rows = []
+
+    instance_eval(&block) if block_given?
+  end
+
+  REPORTS.each do |method_name, klass_name|
+
+    define_method(method_name.to_sym) do |&block|
+      report = klass_name.new
+      report.instance_eval(&block)
+      result = report.execute
+      if result[:error]
+        raise result[:error]
+      else
+        self.send(:rows).push(result[:data])
+        result[:data]
+      end
+    end
+
+  end
+
+  def section(name, &block)
+    rows << {
+      name: name,
+      data: AdminStatisticsDigest::Report.new(&block).data
+    }
+  end
+
+  def size
+    rows.size
+  end
+
+  def data
+    return rows.flatten.freeze if rows.length == 1
+    rows.freeze
+  end
+
+  private
+  attr_accessor :rows
+
+end

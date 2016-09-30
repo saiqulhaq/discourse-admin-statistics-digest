@@ -1,0 +1,51 @@
+<div class="form-horizontal settings">
+
+    <h3>Send email test for last 30 days <button {{action 'previewEmail' target=controllers.adminStatisticsDigestEmailSetting}}>Send</button></h3>
+
+    <br>
+    <hr>
+    <br>
+
+    <h3>Set the sending out time of the email report</h3>
+
+    <label for="day">
+        Every
+      {{view "select" content=controllers.adminStatisticsDigestEmailSetting.days value=controllers.adminStatisticsDigestEmailSetting.selectedDay}}
+        day
+    </label>
+
+    <label for="time">
+        At
+      {{view "select" content=controllers.adminStatisticsDigestEmailSetting.hours value=controllers.adminStatisticsDigestEmailSetting.selectedHour}}
+        :
+      {{view "select" content=controllers.adminStatisticsDigestEmailSetting.minutes value=controllers.adminStatisticsDigestEmailSetting.selectedMin}}
+    </label>
+    <br>
+    <button {{action 'setTimeout' target=controllers.adminStatisticsDigestEmailSetting}}>Save</button>
+
+    <br>
+    <hr>
+    <br>
+
+
+    <h3>Select which categories that will be included in <b>Active Responders</b> report</h3>
+
+    <div class="content-list">
+
+        <ul>
+          {{#each category in controllers.adminStatisticsDigestCategories.arrangedContent itemController='adminStatisticsDigestCategory'}}
+              <li>
+                  <a href="#" >
+                      <label for="{{category.model.name}}">
+                        {{input type="checkbox" checked=category.model.selected}}
+                        {{category.model.name}}
+                      </label>
+                  </a>
+              </li>
+          {{/each}}
+        </ul>
+
+        <button style="margin:10px" {{action 'updateCategories' target=controllers.adminStatisticsDigestCategories}}>Save</button>
+    </div>
+
+</div>

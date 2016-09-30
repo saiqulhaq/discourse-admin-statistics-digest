@@ -1,6 +1,7 @@
 <!doctype html>
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:v="urn:schemas-microsoft-com:vml" xmlns:o="urn:schemas-microsoft-com:office:office">
 <head>
+  <!-- NAME: ELEGANT -->
   <!--[if gte mso 15]>
   <xml>
     <o:OfficeDocumentSettings>
@@ -12,7 +13,7 @@
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Admin Statistics Digest</title>
+  <title><%= @data[:subject] %></title>
 
   <style type="text/css">
     p{
@@ -392,9 +393,15 @@
         line-height:115% !important;
       }
 
-    }</style></head>
+    }
+    .li-group:after {
+      display: table;
+      clear: both;
+      content: "";
+    }
+  </style></head>
 <body leftmargin="0" marginwidth="0" topmargin="0" marginheight="0" offset="0" style="height: 100%;margin: 0;padding: 0;width: 100%;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;background-color: #ECEAD4;">
-<div style="text-align: center;">
+<center>
   <table align="center" border="0" cellpadding="0" cellspacing="0" height="100%" width="100%" id="bodyTable" style="border-collapse: collapse;mso-table-lspace: 0pt;mso-table-rspace: 0pt;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;height: 100%;margin: 0;padding: 0;width: 100%;background-color: #ECEAD4;">
     <tr>
       <td align="center" valign="top" id="bodyCell" style="mso-line-height-rule: exactly;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;height: 100%;margin: 0;padding: 0;width: 100%;border-top: 0;">
@@ -421,8 +428,7 @@
                           <tbody><tr>
 
                             <td valign="top" class="mcnTextContent" style="padding-top: 0;padding-left: 18px;padding-bottom: 9px;padding-right: 18px;mso-line-height-rule: exactly;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;word-break: break-word;color: #FFFFFF;font-family: Verdana;font-size: 10px;line-height: 125%;text-align: left;">
-
-                              Discourse Admin Statistic Report July 2016
+                              <%= @data[:title] %>
                             </td>
                           </tr>
                           </tbody></table>
@@ -464,133 +470,127 @@
               <!-- BEGIN HEADER // -->
               <table border="0" cellpadding="0" cellspacing="0" width="600" id="templateHeader" style="border-collapse: collapse;mso-table-lspace: 0pt;mso-table-rspace: 0pt;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;background-color: #FFFFFF;border-top: 0;border-bottom: 0;">
                 <tr>
-                  <td valign="top" class="headerContainer" style="mso-line-height-rule: exactly;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;">
-                    <% unless logo_url.nil? %>
-                        <table border="0" cellpadding="0" cellspacing="0" width="100%" class="mcnImageBlock" style="min-width: 100%;border-collapse: collapse;mso-table-lspace: 0pt;mso-table-rspace: 0pt;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;">
-                          <tbody class="mcnImageBlockOuter">
-                          <tr>
-                            <td valign="top" style="padding: 9px;mso-line-height-rule: exactly;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;" class="mcnImageBlockInner">
-                              <table align="left" width="100%" border="0" cellpadding="0" cellspacing="0" class="mcnImageContentContainer" style="min-width: 100%;border-collapse: collapse;mso-table-lspace: 0pt;mso-table-rspace: 0pt;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;">
-                                <tbody><tr>
-                                  <td class="mcnImageContent" valign="top" style="padding-right: 9px;padding-left: 9px;padding-top: 0;padding-bottom: 0;text-align: center;mso-line-height-rule: exactly;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;">
-                                    <img align="center" alt="" src="<%= logo_url %>" width="250" style="max-width: 500px;padding-bottom: 0;display: inline !important;vertical-align: bottom;border: 0;height: auto;outline: none;text-decoration: none;-ms-interpolation-mode: bicubic;" class="mcnImage">
-                                  </td>
-                                </tr>
-                                </tbody>
-                              </table>
+                  <td valign="top" class="headerContainer" style="mso-line-height-rule: exactly;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;"><table border="0" cellpadding="0" cellspacing="0" width="100%" class="mcnImageBlock" style="min-width: 100%;border-collapse: collapse;mso-table-lspace: 0pt;mso-table-rspace: 0pt;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;">
+                    <tbody class="mcnImageBlockOuter">
+                    <tr>
+                      <td valign="top" style="padding: 9px;mso-line-height-rule: exactly;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;" class="mcnImageBlockInner">
+                        <table align="left" width="100%" border="0" cellpadding="0" cellspacing="0" class="mcnImageContentContainer" style="min-width: 100%;border-collapse: collapse;mso-table-lspace: 0pt;mso-table-rspace: 0pt;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;">
+                          <tbody><tr>
+                            <td class="mcnImageContent" valign="top" style="padding-right: 9px;padding-left: 9px;padding-top: 0;padding-bottom: 0;text-align: center;mso-line-height-rule: exactly;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;">
+
+
+                              <img align="center" alt="" src="<%= @data['logo_url'] %>" style="max-width: 500px;padding-bottom: 0;display: inline !important;vertical-align: bottom;border: 0;height: auto;outline: none;text-decoration: none;-ms-interpolation-mode: bicubic;" class="mcnImage">
+
+
                             </td>
                           </tr>
-                          </tbody>
-                        </table>
-                        <table border="0" cellpadding="0" cellspacing="0" width="100%" class="mcnDividerBlock" style="min-width: 100%;border-collapse: collapse;mso-table-lspace: 0pt;mso-table-rspace: 0pt;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;table-layout: fixed !important;">
-                          <tbody class="mcnDividerBlockOuter">
-                          <tr>
-                            <td class="mcnDividerBlockInner" style="min-width: 100%;padding: 20px 18px;mso-line-height-rule: exactly;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;">
-                              <table class="mcnDividerContent" border="0" cellpadding="0" cellspacing="0" width="100%" style="min-width: 100%;border-top-width: 3px;border-top-style: groove;border-top-color: #FFD6D6;border-collapse: collapse;mso-table-lspace: 0pt;mso-table-rspace: 0pt;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;">
-                                <tbody><tr>
-                                  <td style="mso-line-height-rule: exactly;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;">
-                                    <span></span>
-                                  </td>
-                                </tr>
-                                </tbody></table>
-                              <!--
-                                              <td class="mcnDividerBlockInner" style="padding: 18px;">
-                                              <hr class="mcnDividerContent" style="border-bottom-color:none; border-left-color:none; border-right-color:none; border-bottom-width:0; border-left-width:0; border-right-width:0; margin-top:0; margin-right:0; margin-bottom:0; margin-left:0;" />
-                              -->
+                          </tbody></table>
+                      </td>
+                    </tr>
+                    </tbody>
+                  </table><table border="0" cellpadding="0" cellspacing="0" width="100%" class="mcnDividerBlock" style="min-width: 100%;border-collapse: collapse;mso-table-lspace: 0pt;mso-table-rspace: 0pt;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;table-layout: fixed !important;">
+                    <tbody class="mcnDividerBlockOuter">
+                    <tr>
+                      <td class="mcnDividerBlockInner" style="min-width: 100%;padding: 20px 18px;mso-line-height-rule: exactly;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;">
+                        <table class="mcnDividerContent" border="0" cellpadding="0" cellspacing="0" width="100%" style="min-width: 100%;border-top-width: 3px;border-top-style: groove;border-top-color: #FFD6D6;border-collapse: collapse;mso-table-lspace: 0pt;mso-table-rspace: 0pt;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;">
+                          <tbody><tr>
+                            <td style="mso-line-height-rule: exactly;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;">
+                              <span></span>
                             </td>
                           </tr>
-                          </tbody>
+                          </tbody></table>
+                        <!--
+                                        <td class="mcnDividerBlockInner" style="padding: 18px;">
+                                        <hr class="mcnDividerContent" style="border-bottom-color:none; border-left-color:none; border-right-color:none; border-bottom-width:0; border-left-width:0; border-right-width:0; margin-top:0; margin-right:0; margin-bottom:0; margin-left:0;" />
+                        -->
+                      </td>
+                    </tr>
+                    </tbody>
+                  </table><table border="0" cellpadding="0" cellspacing="0" width="100%" class="mcnTextBlock" style="min-width: 100%;border-collapse: collapse;mso-table-lspace: 0pt;mso-table-rspace: 0pt;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;">
+                    <tbody class="mcnTextBlockOuter">
+                    <tr>
+                      <td valign="top" class="mcnTextBlockInner" style="padding-top: 9px;mso-line-height-rule: exactly;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;">
+                        <!--[if mso]>
+                        <table align="left" border="0" cellspacing="0" cellpadding="0" width="100%" style="width:100%;">
+                          <tr>
+                        <![endif]-->
+
+                        <!--[if mso]>
+                        <td valign="top" width="600" style="width:600px;">
+                        <![endif]-->
+                        <table align="left" border="0" cellpadding="0" cellspacing="0" style="max-width: 100%;min-width: 100%;border-collapse: collapse;mso-table-lspace: 0pt;mso-table-rspace: 0pt;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;" width="100%" class="mcnTextContentContainer">
+                          <tbody><tr>
+
+                            <td valign="top" class="mcnTextContent" style="padding-top: 0;padding-right: 18px;padding-bottom: 9px;padding-left: 18px;mso-line-height-rule: exactly;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;word-break: break-word;color: #404040;font-family: Georgia;font-size: 16px;line-height: 150%;text-align: center;">
+
+                              <h1 style="display: block;margin: 0;padding: 0;font-family: Georgia;font-size: 30px;font-style: normal;font-weight: normal;line-height: 125%;letter-spacing: 0;text-align: center;color: #C52E26 !important;">Admin Statistic Report</h1>
+                              <%= @report_date %>
+                            </td>
+                          </tr>
+                          </tbody></table>
+                        <!--[if mso]>
+                        </td>
+                        <![endif]-->
+
+                        <!--[if mso]>
+                        </tr>
                         </table>
-                    <% end %>
-
-                    <table border="0" cellpadding="0" cellspacing="0" width="100%" class="mcnTextBlock" style="min-width: 100%;border-collapse: collapse;mso-table-lspace: 0pt;mso-table-rspace: 0pt;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;">
-                      <tbody class="mcnTextBlockOuter">
-                      <tr>
-                        <td valign="top" class="mcnTextBlockInner" style="padding-top: 9px;mso-line-height-rule: exactly;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;">
-                          <!--[if mso]>
-                          <table align="left" border="0" cellspacing="0" cellpadding="0" width="100%" style="width:100%;">
-                            <tr>
-                          <![endif]-->
-
-                          <!--[if mso]>
-                          <td valign="top" width="600" style="width:600px;">
-                          <![endif]-->
-                          <table align="left" border="0" cellpadding="0" cellspacing="0" style="max-width: 100%;min-width: 100%;border-collapse: collapse;mso-table-lspace: 0pt;mso-table-rspace: 0pt;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;" width="100%" class="mcnTextContentContainer">
-                            <tbody><tr>
-
-                              <td valign="top" class="mcnTextContent" style="padding-top: 0;padding-right: 18px;padding-bottom: 9px;padding-left: 18px;mso-line-height-rule: exactly;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;word-break: break-word;color: #404040;font-family: Georgia;font-size: 16px;line-height: 150%;text-align: center;">
-
-                                <h1 style="display: block;margin: 0;padding: 0;font-family: Georgia;font-size: 30px;font-style: normal;font-weight: normal;line-height: 125%;letter-spacing: 0;text-align: center;color: #C52E26 !important;">Admin Statistic Report</h1>
-                                July 2016
-                              </td>
-                            </tr>
-                            </tbody></table>
-                          <!--[if mso]>
-                          </td>
-                          <![endif]-->
-
-                          <!--[if mso]>
+                        <![endif]-->
+                      </td>
+                    </tr>
+                    </tbody>
+                  </table><table border="0" cellpadding="0" cellspacing="0" width="100%" class="mcnDividerBlock" style="min-width: 100%;border-collapse: collapse;mso-table-lspace: 0pt;mso-table-rspace: 0pt;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;table-layout: fixed !important;">
+                    <tbody class="mcnDividerBlockOuter">
+                    <tr>
+                      <td class="mcnDividerBlockInner" style="min-width: 100%;padding: 20px 18px;mso-line-height-rule: exactly;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;">
+                        <table class="mcnDividerContent" border="0" cellpadding="0" cellspacing="0" width="100%" style="min-width: 100%;border-top-width: 3px;border-top-style: groove;border-top-color: #FFD6D6;border-collapse: collapse;mso-table-lspace: 0pt;mso-table-rspace: 0pt;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;">
+                          <tbody><tr>
+                            <td style="mso-line-height-rule: exactly;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;">
+                              <span></span>
+                            </td>
                           </tr>
-                          </table>
-                          <![endif]-->
-                        </td>
-                      </tr>
-                      </tbody>
-                    </table>
-                    <table border="0" cellpadding="0" cellspacing="0" width="100%" class="mcnDividerBlock" style="min-width: 100%;border-collapse: collapse;mso-table-lspace: 0pt;mso-table-rspace: 0pt;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;table-layout: fixed !important;">
-                      <tbody class="mcnDividerBlockOuter">
-                      <tr>
-                        <td class="mcnDividerBlockInner" style="min-width: 100%;padding: 20px 18px;mso-line-height-rule: exactly;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;">
-                          <table class="mcnDividerContent" border="0" cellpadding="0" cellspacing="0" width="100%" style="min-width: 100%;border-top-width: 3px;border-top-style: groove;border-top-color: #FFD6D6;border-collapse: collapse;mso-table-lspace: 0pt;mso-table-rspace: 0pt;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;">
-                            <tbody><tr>
-                              <td style="mso-line-height-rule: exactly;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;">
-                                <span></span>
-                              </td>
-                            </tr>
-                            </tbody></table>
-                          <!--
-                                          <td class="mcnDividerBlockInner" style="padding: 18px;">
-                                          <hr class="mcnDividerContent" style="border-bottom-color:none; border-left-color:none; border-right-color:none; border-bottom-width:0; border-left-width:0; border-right-width:0; margin-top:0; margin-right:0; margin-bottom:0; margin-left:0;" />
-                          -->
-                        </td>
-                      </tr>
-                      </tbody>
-                    </table>
-                    <table border="0" cellpadding="0" cellspacing="0" width="100%" class="mcnTextBlock" style="min-width: 100%;border-collapse: collapse;mso-table-lspace: 0pt;mso-table-rspace: 0pt;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;">
-                      <tbody class="mcnTextBlockOuter">
-                      <tr>
-                        <td valign="top" class="mcnTextBlockInner" style="padding-top: 9px;mso-line-height-rule: exactly;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;">
-                          <!--[if mso]>
-                          <table align="left" border="0" cellspacing="0" cellpadding="0" width="100%" style="width:100%;">
-                            <tr>
-                          <![endif]-->
+                          </tbody></table>
+                        <!--
+                                        <td class="mcnDividerBlockInner" style="padding: 18px;">
+                                        <hr class="mcnDividerContent" style="border-bottom-color:none; border-left-color:none; border-right-color:none; border-bottom-width:0; border-left-width:0; border-right-width:0; margin-top:0; margin-right:0; margin-bottom:0; margin-left:0;" />
+                        -->
+                      </td>
+                    </tr>
+                    </tbody>
+                  </table><table border="0" cellpadding="0" cellspacing="0" width="100%" class="mcnTextBlock" style="min-width: 100%;border-collapse: collapse;mso-table-lspace: 0pt;mso-table-rspace: 0pt;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;">
+                    <tbody class="mcnTextBlockOuter">
+                    <tr>
+                      <td valign="top" class="mcnTextBlockInner" style="padding-top: 9px;mso-line-height-rule: exactly;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;">
+                        <!--[if mso]>
+                        <table align="left" border="0" cellspacing="0" cellpadding="0" width="100%" style="width:100%;">
+                          <tr>
+                        <![endif]-->
 
-                          <!--[if mso]>
-                          <td valign="top" width="600" style="width:600px;">
-                          <![endif]-->
-                          <table align="left" border="0" cellpadding="0" cellspacing="0" style="max-width: 100%;min-width: 100%;border-collapse: collapse;mso-table-lspace: 0pt;mso-table-rspace: 0pt;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;" width="100%" class="mcnTextContentContainer">
-                            <tbody><tr>
+                        <!--[if mso]>
+                        <td valign="top" width="600" style="width:600px;">
+                        <![endif]-->
+                        <table align="left" border="0" cellpadding="0" cellspacing="0" style="max-width: 100%;min-width: 100%;border-collapse: collapse;mso-table-lspace: 0pt;mso-table-rspace: 0pt;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;" width="100%" class="mcnTextContentContainer">
+                          <tbody><tr>
 
-                              <td valign="top" class="mcnTextContent" style="padding-top: 0;padding-right: 18px;padding-bottom: 9px;padding-left: 18px;mso-line-height-rule: exactly;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;word-break: break-word;color: #404040;font-family: Georgia;font-size: 16px;line-height: 150%;text-align: center;">
+                            <td valign="top" class="mcnTextContent" style="padding-top: 0;padding-right: 18px;padding-bottom: 9px;padding-left: 18px;mso-line-height-rule: exactly;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;word-break: break-word;color: #404040;font-family: Georgia;font-size: 16px;line-height: 150%;text-align: center;">
 
-                                <h3 style="display: block;margin: 0;padding: 0;font-family: Georgia;font-size: 14px;font-style: normal;font-weight: normal;line-height: 125%;letter-spacing: normal;text-align: center;color: #202020 !important;"><span style="font-size:18px">Most Active New Registered Users</span></h3>
+                              <h3 style="display: block;margin: 0;padding: 0;font-family: Georgia;font-size: 14px;font-style: normal;font-weight: normal;line-height: 125%;letter-spacing: normal;text-align: center;color: #202020 !important;"><span style="font-size:18px">Most Active New Registered Users</span></h3>
 
-                              </td>
-                            </tr>
-                            </tbody></table>
-                          <!--[if mso]>
-                          </td>
-                          <![endif]-->
-
-                          <!--[if mso]>
+                            </td>
                           </tr>
-                          </table>
-                          <![endif]-->
+                          </tbody></table>
+                        <!--[if mso]>
                         </td>
-                      </tr>
-                      </tbody>
-                    </table>
-                  </td>
+                        <![endif]-->
+
+                        <!--[if mso]>
+                        </tr>
+                        </table>
+                        <![endif]-->
+                      </td>
+                    </tr>
+                    </tbody>
+                  </table></td>
                 </tr>
               </table>
               <!-- // END HEADER -->
@@ -619,14 +619,22 @@
                             <td valign="top" class="mcnTextContent" style="padding-top: 0;padding-right: 18px;padding-bottom: 9px;padding-left: 18px;mso-line-height-rule: exactly;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;word-break: break-word;color: #404040;font-family: Verdana;font-size: 14px;line-height: 150%;text-align: left;">
 
                               <ol>
-                                <% @new_active_users.each do |u| %>
-                                    <li style="mso-line-height-rule: exactly;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;">
-                                      <h3 style="text-align: left;display: block;margin: 0;padding: 0;font-family: Georgia;font-size: 14px;font-style: normal;font-weight: normal;line-height: 125%;letter-spacing: normal;color: #202020 !important;"><span style="font-size:14px">
-                                        <a href="<%= user_url(u['username'], host: Discourse.base_url_no_prefix) %>" target="_blank" style="mso-line-height-rule: exactly;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;color: #C52E26;font-weight: normal;text-decoration: none;">
-                                          <%= u['username'] %>
-                                        </a> -&nbsp;<%= u['name']%> <span style="float:right"><%= u['topic'].to_i %> Topics <%= u['replies'].to_i %> Replies</span></span>
-                                      </h3>
-                                    </li>
+                                <% if @data[:top_new_registered_users].present? %>
+                                    <%- @data[:top_new_registered_users].each do |user| %>
+                                        <li class="li-group" style="mso-line-height-rule: exactly;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;">
+                                          <h3 style="text-align: left;display: block;margin: 0;padding: 0;font-family: Georgia;font-size: 14px;font-style: normal;font-weight: normal;line-height: 125%;letter-spacing: normal;color: #202020 !important;">
+                                        <span style="font-size:14px">
+                                          <a href="<%= user_url(user['username'], host: Discourse.base_url) %>" target="_blank" style="mso-line-height-rule: exactly;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;color: #C52E26;font-weight: normal;text-decoration: none;">
+                                            <%= user['username'] %>
+                                          </a> -&nbsp;<%= user['name'] %>
+                                          <span style="float:right">
+                                            <%= user['topics'] %> Topics, <%= user['replies'] %> Replies</span>
+                                        </span>
+                                          </h3>
+                                        </li>
+                                    <% end %>
+                                <% else %>
+                                    <li>No data yet</li>
                                 <% end %>
                               </ol>
 
@@ -713,14 +721,21 @@
                             <td valign="top" class="mcnTextContent" style="padding-top: 0;padding-right: 18px;padding-bottom: 9px;padding-left: 18px;mso-line-height-rule: exactly;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;word-break: break-word;color: #404040;font-family: Verdana;font-size: 14px;line-height: 150%;text-align: left;">
 
                               <ol>
-                                <% @top_non_staff_users.each do |u| %>
-                                    <li style="mso-line-height-rule: exactly;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;">
-                                      <h3 style="text-align: left;display: block;margin: 0;padding: 0;font-family: Georgia;font-size: 14px;font-style: normal;font-weight: normal;line-height: 125%;letter-spacing: normal;color: #202020 !important;"><span style="font-size:14px">
-                                        <a href="<%= user_url(u['username'], host: Discourse.base_url_no_prefix) %>" target="_blank" style="mso-line-height-rule: exactly;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;color: #C52E26;font-weight: normal;text-decoration: none;">
-                                          <%= u['username'] %>
-                                        </a> -&nbsp;<%= u['name']%> <span style="float:right"><%= u['topic'].to_i %> Topics <%= u['replies'].to_i %> Replies</span></span>
-                                      </h3>
-                                    </li>
+                                <% if @data[:top_non_staff_users].present? %>
+                                    <%- @data[:top_non_staff_users].each do |user| %>
+                                        <li class="li-group" style="mso-line-height-rule: exactly;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;">
+                                          <h3 style="text-align: left;display: block;margin: 0;padding: 0;font-family: Georgia;font-size: 14px;font-style: normal;font-weight: normal;line-height: 125%;letter-spacing: normal;color: #202020 !important;">
+                                            <a href="<%= user_url(user['username'], host: Discourse.base_url) %>" target="_blank" style="mso-line-height-rule: exactly;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;color: #C52E26;font-weight: normal;text-decoration: none;">
+                                              <%= user['username'] %>
+                                            </a>&nbsp;- <%= user['name'] %>
+                                            <span style="float:right">
+                                      <%= user['topics'] %>&nbsp;Topics, <%= user['replies'] %> Replies
+                                    </span>
+                                          </h3>
+                                        </li>
+                                    <% end %>
+                                <% else %>
+                                    <li>No data yet</li>
                                 <% end %>
                               </ol>
 
@@ -773,7 +788,7 @@
 
                             <td valign="top" class="mcnTextContent" style="padding-top: 0;padding-right: 18px;padding-bottom: 9px;padding-left: 18px;mso-line-height-rule: exactly;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;word-break: break-word;color: #404040;font-family: Verdana;font-size: 14px;line-height: 150%;text-align: left;">
 
-                              <h3 style="display: block;margin: 0;padding: 0;font-family: Georgia;font-size: 14px;font-style: normal;font-weight: normal;line-height: 125%;letter-spacing: normal;text-align: center;color: #202020 !important;"><span style="font-size:18px">Top Users Who&nbsp;No More Active As 3&nbsp;Months&nbsp;Before</span></h3>
+                              <h3 style="display: block;margin: 0;padding: 0;font-family: Georgia;font-size: 14px;font-style: normal;font-weight: normal;line-height: 125%;letter-spacing: normal;text-align: center;color: #202020 !important;"><span style="font-size:18px">Demoted Regulars This Month</span></h3>
 
                             </td>
                           </tr>
@@ -807,21 +822,19 @@
                             <td valign="top" class="mcnTextContent" style="padding-top: 0;padding-right: 18px;padding-bottom: 9px;padding-left: 18px;mso-line-height-rule: exactly;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;word-break: break-word;color: #404040;font-family: Verdana;font-size: 14px;line-height: 150%;text-align: left;">
 
                               <ol>
-                                <li style="mso-line-height-rule: exactly;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;">
-                                  <h3 style="text-align: left;display: block;margin: 0;padding: 0;font-family: Georgia;font-size: 14px;font-style: normal;font-weight: normal;line-height: 125%;letter-spacing: normal;color: #202020 !important;"><a href="https://meta.discourse.org/users/Tom_Newsom" target="_blank" style="mso-line-height-rule: exactly;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;color: #C52E26;font-weight: normal;text-decoration: none;">fefrei</a>&nbsp;- Felix Freiberger<span style="float:right">↓ 5%</span></h3>
-                                </li>
-                                <li style="mso-line-height-rule: exactly;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;">
-                                  <h3 style="text-align: left;display: block;margin: 0;padding: 0;font-family: Georgia;font-size: 14px;font-style: normal;font-weight: normal;line-height: 125%;letter-spacing: normal;color: #202020 !important;"><a href="https://meta.discourse.org/users/Tom_Newsom" target="_blank" style="mso-line-height-rule: exactly;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;color: #C52E26;font-weight: normal;text-decoration: none;">Falco</a>&nbsp;- Rafael dos Santos Silva<span style="float:right">↓ 6%</span></h3>
-                                </li>
-                                <li style="mso-line-height-rule: exactly;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;">
-                                  <h3 style="text-align: left;display: block;margin: 0;padding: 0;font-family: Georgia;font-size: 14px;font-style: normal;font-weight: normal;line-height: 125%;letter-spacing: normal;color: #202020 !important;"><a href="https://meta.discourse.org/users/Tom_Newsom" target="_blank" style="mso-line-height-rule: exactly;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;color: #C52E26;font-weight: normal;text-decoration: none;">DeanMarkTaylor</a>&nbsp;-&nbsp;Dean Taylor<span style="float:right">↓ 6.5%</span></h3>
-                                </li>
-                                <li style="mso-line-height-rule: exactly;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;">
-                                  <h3 style="text-align: left;display: block;margin: 0;padding: 0;font-family: Georgia;font-size: 14px;font-style: normal;font-weight: normal;line-height: 125%;letter-spacing: normal;color: #202020 !important;"><a data-user-card="jomaxro" href="https://meta.discourse.org/users/jomaxro" style="mso-line-height-rule: exactly;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;color: #C52E26;font-weight: normal;text-decoration: none;">jomaxro</a>&nbsp;- Joshua Rosenfeld<span style="float:right">↓ 10%</span></h3>
-                                </li>
-                                <li style="mso-line-height-rule: exactly;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;">
-                                  <h3 style="text-align: left;display: block;margin: 0;padding: 0;font-family: Georgia;font-size: 14px;font-style: normal;font-weight: normal;line-height: 125%;letter-spacing: normal;color: #202020 !important;"><a data-user-card="alehandrof" href="https://meta.discourse.org/users/alehandrof" style="mso-line-height-rule: exactly;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;color: #C52E26;font-weight: normal;text-decoration: none;">alehandrof</a>&nbsp;- Alex Armstrong<span style="float:right">↓ 15%</span></h3>
-                                </li>
+                                <% if @data[:demoted_regulars_this_month].present? %>
+                                    <%- @data[:demoted_regulars_this_month].each do |user| %>
+                                        <li class="li-group" style="mso-line-height-rule: exactly;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;">
+                                          <h3 style="text-align: left;display: block;margin: 0;padding: 0;font-family: Georgia;font-size: 14px;font-style: normal;font-weight: normal;line-height: 125%;letter-spacing: normal;color: #202020 !important;">
+                                            <a href="<%= user_url(user['username'], host: Discourse.base_url) %>" target="_blank" style="mso-line-height-rule: exactly;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;color: #C52E26;font-weight: normal;text-decoration: none;">
+                                              <%= user['username'] %>
+                                            </a>&nbsp;- <%= user['name'] %>
+                                          </h3>
+                                        </li>
+                                    <% end %>
+                                <% else %>
+                                    <li>No data yet</li>
+                                <% end %>
                               </ol>
 
                             </td>
@@ -904,71 +917,39 @@
                         <table align="left" border="0" cellpadding="0" cellspacing="0" style="max-width: 100%;min-width: 100%;border-collapse: collapse;mso-table-lspace: 0pt;mso-table-rspace: 0pt;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;" width="100%" class="mcnTextContentContainer">
                           <tbody><tr>
 
-                            <td valign="top" class="mcnTextContent" style="padding-top: 0;padding-right: 18px;padding-bottom: 9px;padding-left: 18px;mso-line-height-rule: exactly;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;word-break: break-word;color: #404040;font-family: Verdana;font-size: 14px;line-height: 150%;text-align: left;">
+                            <% if @data[:active_responders].present? %>
+                                <td valign="top" class="mcnTextContent" style="padding-top: 0;padding-right: 18px;padding-bottom: 9px;padding-left: 18px;mso-line-height-rule: exactly;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;word-break: break-word;color: #404040;font-family: Verdana;font-size: 14px;line-height: 150%;text-align: left;">
 
-                              <h4 class="null" style="display: block;margin: 0;padding: 0;font-family: Verdana;font-size: 14px;font-style: normal;font-weight: normal;line-height: 125%;letter-spacing: normal;text-align: left;color: #C52E26 !important;"><strong><a href="https://meta.discourse.org/c/support" target="_blank" style="mso-line-height-rule: exactly;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;color: #C52E26;font-weight: normal;text-decoration: none;">#Support Category</a></strong></h4>
+                                  <%- @data[:active_responders].each do |category| %>
+                                      <h4 class="null" style="display: block;margin: 0;padding: 0;font-family: Verdana;font-size: 14px;font-style: normal;font-weight: normal;line-height: 125%;letter-spacing: normal;text-align: left;color: #C52E26 !important;">
+                                        <strong>
+                                          <a href="https://meta.discourse.org/c/support" target="_blank" style="mso-line-height-rule: exactly;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;color: #C52E26;font-weight: normal;text-decoration: none;">#<%= category['category_name'] %></a>
+                                        </strong>
+                                      </h4>
+                                        <% if category['responders'].present? %>
+                                          <ol>
+                                            <%- category['responders'].each do |user| %>
+                                                <li style="mso-line-height-rule: exactly;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;">
+                                                  <h3 style="text-align: left;display: block;margin: 0;padding: 0;font-family: Georgia;font-size: 14px;font-style: normal;font-weight: normal;line-height: 125%;letter-spacing: normal;color: #202020 !important;">
+                                                    <a href="<%= "#{Discourse.base_url}/users/#{user['username']}" %>" target="_blank" style="mso-line-height-rule: exactly;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;color: #C52E26;font-weight: normal;text-decoration: none;">
+                                                      <%= user['username'] %>
+                                                    </a>
+                                                    &nbsp;- <%= user['name'] %>
+                                                  </h3>
+                                                </li>
+                                            <% end %>
+                                          </ol>
+                                        <% else %>
+                                          <ul>
+                                            <li>No data yet</li>
+                                          </ul>
+                                        <% end %>
+                                  <% end %>
 
-                              <ol>
-                                <li style="mso-line-height-rule: exactly;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;">
-                                  <h3 style="text-align: left;display: block;margin: 0;padding: 0;font-family: Georgia;font-size: 14px;font-style: normal;font-weight: normal;line-height: 125%;letter-spacing: normal;color: #202020 !important;"><a href="https://meta.discourse.org/users/Tom_Newsom" target="_blank" style="mso-line-height-rule: exactly;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;color: #C52E26;font-weight: normal;text-decoration: none;">fefrei</a>&nbsp;- Felix Freiberger</h3>
-                                </li>
-                                <li style="mso-line-height-rule: exactly;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;">
-                                  <h3 style="text-align: left;display: block;margin: 0;padding: 0;font-family: Georgia;font-size: 14px;font-style: normal;font-weight: normal;line-height: 125%;letter-spacing: normal;color: #202020 !important;"><a href="https://meta.discourse.org/users/Tom_Newsom" target="_blank" style="mso-line-height-rule: exactly;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;color: #C52E26;font-weight: normal;text-decoration: none;">Falco</a>&nbsp;- Rafael dos Santos Silva</h3>
-                                </li>
-                                <li style="mso-line-height-rule: exactly;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;">
-                                  <h3 style="text-align: left;display: block;margin: 0;padding: 0;font-family: Georgia;font-size: 14px;font-style: normal;font-weight: normal;line-height: 125%;letter-spacing: normal;color: #202020 !important;"><a href="https://meta.discourse.org/users/Tom_Newsom" target="_blank" style="mso-line-height-rule: exactly;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;color: #C52E26;font-weight: normal;text-decoration: none;">DeanMarkTaylor</a>&nbsp;-&nbsp;Dean Taylor</h3>
-                                </li>
-                                <li style="mso-line-height-rule: exactly;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;">
-                                  <h3 style="text-align: left;display: block;margin: 0;padding: 0;font-family: Georgia;font-size: 14px;font-style: normal;font-weight: normal;line-height: 125%;letter-spacing: normal;color: #202020 !important;"><a data-user-card="jomaxro" href="https://meta.discourse.org/users/jomaxro" style="mso-line-height-rule: exactly;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;color: #C52E26;font-weight: normal;text-decoration: none;">jomaxro</a>&nbsp;- Joshua Rosenfeld</h3>
-                                </li>
-                                <li style="mso-line-height-rule: exactly;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;">
-                                  <h3 style="text-align: left;display: block;margin: 0;padding: 0;font-family: Georgia;font-size: 14px;font-style: normal;font-weight: normal;line-height: 125%;letter-spacing: normal;color: #202020 !important;"><a data-user-card="alehandrof" href="https://meta.discourse.org/users/alehandrof" style="mso-line-height-rule: exactly;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;color: #C52E26;font-weight: normal;text-decoration: none;">alehandrof</a>&nbsp;- Alex Armstrong</h3>
-                                </li>
-                              </ol>
-                              &nbsp;
-
-                              <h4 class="null" style="display: block;margin: 0;padding: 0;font-family: Verdana;font-size: 14px;font-style: normal;font-weight: normal;line-height: 125%;letter-spacing: normal;text-align: left;color: #C52E26 !important;"><strong><a href="https://meta.discourse.org/c/support" target="_blank" style="mso-line-height-rule: exactly;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;color: #C52E26;font-weight: normal;text-decoration: none;">#Bug Category</a></strong></h4>
-
-                              <ol>
-                                <li style="mso-line-height-rule: exactly;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;">
-                                  <h3 style="text-align: left;display: block;margin: 0;padding: 0;font-family: Georgia;font-size: 14px;font-style: normal;font-weight: normal;line-height: 125%;letter-spacing: normal;color: #202020 !important;"><a href="https://meta.discourse.org/users/Tom_Newsom" target="_blank" style="mso-line-height-rule: exactly;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;color: #C52E26;font-weight: normal;text-decoration: none;">fefrei</a>&nbsp;- Felix Freiberger</h3>
-                                </li>
-                                <li style="mso-line-height-rule: exactly;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;">
-                                  <h3 style="text-align: left;display: block;margin: 0;padding: 0;font-family: Georgia;font-size: 14px;font-style: normal;font-weight: normal;line-height: 125%;letter-spacing: normal;color: #202020 !important;"><a href="https://meta.discourse.org/users/Tom_Newsom" target="_blank" style="mso-line-height-rule: exactly;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;color: #C52E26;font-weight: normal;text-decoration: none;">Falco</a>&nbsp;- Rafael dos Santos Silva</h3>
-                                </li>
-                                <li style="mso-line-height-rule: exactly;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;">
-                                  <h3 style="text-align: left;display: block;margin: 0;padding: 0;font-family: Georgia;font-size: 14px;font-style: normal;font-weight: normal;line-height: 125%;letter-spacing: normal;color: #202020 !important;"><a href="https://meta.discourse.org/users/Tom_Newsom" target="_blank" style="mso-line-height-rule: exactly;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;color: #C52E26;font-weight: normal;text-decoration: none;">DeanMarkTaylor</a>&nbsp;-&nbsp;Dean Taylor</h3>
-                                </li>
-                                <li style="mso-line-height-rule: exactly;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;">
-                                  <h3 style="text-align: left;display: block;margin: 0;padding: 0;font-family: Georgia;font-size: 14px;font-style: normal;font-weight: normal;line-height: 125%;letter-spacing: normal;color: #202020 !important;"><a data-user-card="jomaxro" href="https://meta.discourse.org/users/jomaxro" style="mso-line-height-rule: exactly;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;color: #C52E26;font-weight: normal;text-decoration: none;">jomaxro</a>&nbsp;- Joshua Rosenfeld</h3>
-                                </li>
-                                <li style="mso-line-height-rule: exactly;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;">
-                                  <h3 style="text-align: left;display: block;margin: 0;padding: 0;font-family: Georgia;font-size: 14px;font-style: normal;font-weight: normal;line-height: 125%;letter-spacing: normal;color: #202020 !important;"><a data-user-card="alehandrof" href="https://meta.discourse.org/users/alehandrof" style="mso-line-height-rule: exactly;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;color: #C52E26;font-weight: normal;text-decoration: none;">alehandrof</a>&nbsp;- Alex Armstrong</h3>
-                                </li>
-                              </ol>
-                              &nbsp;
-
-                              <h4 class="null" style="display: block;margin: 0;padding: 0;font-family: Verdana;font-size: 14px;font-style: normal;font-weight: normal;line-height: 125%;letter-spacing: normal;text-align: left;color: #C52E26 !important;"><strong><a href="https://meta.discourse.org/c/support" target="_blank" style="mso-line-height-rule: exactly;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;color: #C52E26;font-weight: normal;text-decoration: none;">#Feature Category</a></strong></h4>
-
-                              <ol>
-                                <li style="mso-line-height-rule: exactly;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;">
-                                  <h3 style="text-align: left;display: block;margin: 0;padding: 0;font-family: Georgia;font-size: 14px;font-style: normal;font-weight: normal;line-height: 125%;letter-spacing: normal;color: #202020 !important;"><a href="https://meta.discourse.org/users/Tom_Newsom" target="_blank" style="mso-line-height-rule: exactly;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;color: #C52E26;font-weight: normal;text-decoration: none;">fefrei</a>&nbsp;- Felix Freiberger</h3>
-                                </li>
-                                <li style="mso-line-height-rule: exactly;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;">
-                                  <h3 style="text-align: left;display: block;margin: 0;padding: 0;font-family: Georgia;font-size: 14px;font-style: normal;font-weight: normal;line-height: 125%;letter-spacing: normal;color: #202020 !important;"><a href="https://meta.discourse.org/users/Tom_Newsom" target="_blank" style="mso-line-height-rule: exactly;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;color: #C52E26;font-weight: normal;text-decoration: none;">Falco</a>&nbsp;- Rafael dos Santos Silva</h3>
-                                </li>
-                                <li style="mso-line-height-rule: exactly;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;">
-                                  <h3 style="text-align: left;display: block;margin: 0;padding: 0;font-family: Georgia;font-size: 14px;font-style: normal;font-weight: normal;line-height: 125%;letter-spacing: normal;color: #202020 !important;"><a href="https://meta.discourse.org/users/Tom_Newsom" target="_blank" style="mso-line-height-rule: exactly;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;color: #C52E26;font-weight: normal;text-decoration: none;">DeanMarkTaylor</a>&nbsp;-&nbsp;Dean Taylor</h3>
-                                </li>
-                                <li style="mso-line-height-rule: exactly;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;">
-                                  <h3 style="text-align: left;display: block;margin: 0;padding: 0;font-family: Georgia;font-size: 14px;font-style: normal;font-weight: normal;line-height: 125%;letter-spacing: normal;color: #202020 !important;"><a data-user-card="jomaxro" href="https://meta.discourse.org/users/jomaxro" style="mso-line-height-rule: exactly;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;color: #C52E26;font-weight: normal;text-decoration: none;">jomaxro</a>&nbsp;- Joshua Rosenfeld</h3>
-                                </li>
-                                <li style="mso-line-height-rule: exactly;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;">
-                                  <h3 style="text-align: left;display: block;margin: 0;padding: 0;font-family: Georgia;font-size: 14px;font-style: normal;font-weight: normal;line-height: 125%;letter-spacing: normal;color: #202020 !important;"><a data-user-card="alehandrof" href="https://meta.discourse.org/users/alehandrof" style="mso-line-height-rule: exactly;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;color: #C52E26;font-weight: normal;text-decoration: none;">alehandrof</a>&nbsp;- Alex Armstrong</h3>
-                                </li>
-                              </ol>
-
-                            </td>
+                                </td>
+                            <% else %>
+                                <td valign="top" class="mcnTextContent" style="padding-top: 0;padding-right: 18px;padding-bottom: 9px;padding-left: 18px;mso-line-height-rule: exactly;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;word-break: break-word;color: #404040;font-family: Verdana;font-size: 14px;line-height: 150%;text-align: left;">No data yet</td>
+                            <% end %>
                           </tr>
                           </tbody></table>
                         <!--[if mso]>
@@ -1017,7 +998,7 @@
 
                             <td valign="top" class="mcnTextContent" style="padding-top: 0;padding-right: 18px;padding-bottom: 9px;padding-left: 18px;mso-line-height-rule: exactly;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;word-break: break-word;color: #404040;font-family: Verdana;font-size: 14px;line-height: 150%;text-align: left;">
 
-                              <h3 style="display: block;margin: 0;padding: 0;font-family: Georgia;font-size: 14px;font-style: normal;font-weight: normal;line-height: 125%;letter-spacing: normal;text-align: center;color: #202020 !important;"><span style="font-size:18px">Most popular topics &amp; posts this month</span></h3>
+                              <h3 style="display: block;margin: 0;padding: 0;font-family: Georgia;font-size: 14px;font-style: normal;font-weight: normal;line-height: 125%;letter-spacing: normal;text-align: center;color: #202020 !important;"><span style="font-size:18px">Most Popular Topics &amp; Posts This Month</span></h3>
 
                             </td>
                           </tr>
@@ -1066,39 +1047,75 @@
                               }
                               </style>
                               <ul>
-                                <li style="mso-line-height-rule: exactly;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;"><a href="http://meta.discourse.org/t/our-latest-experimental-branch-es6-modules-text-rendering/46815" style="mso-line-height-rule: exactly;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;color: #C52E26;font-weight: normal;text-decoration: none;">Our latest experimental branch: ES6 Modules + Text Rendering</a><span class="bullet" style="width: 10px;height: 10px;background-color: #CEA9A9;margin-right: 3px;margin-left: 3px;display: inline-flex;align-items: baseline;line-height: 0.5;">&nbsp;</span>dev</li>
-                                <li style="mso-line-height-rule: exactly;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;"><a href="http://meta.discourse.org/t/redesigning-the-default-category-page/46783" style="mso-line-height-rule: exactly;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;color: #C52E26;font-weight: normal;text-decoration: none;">Redesigning the default category page</a><span class="bullet" style="width: 10px;height: 10px;background-color: #CEA9A9;margin-right: 3px;margin-left: 3px;display: inline-flex;align-items: baseline;line-height: 0.5;">&nbsp;</span>dev</li>
-                                <li style="mso-line-height-rule: exactly;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;"><a href="http://meta.discourse.org/t/cant-create-topic-with-tag-using-admin-api-due-to-insufficient-trust-level/46972" style="mso-line-height-rule: exactly;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;color: #C52E26;font-weight: normal;text-decoration: none;">Can't create topic with tag using admin API due to insufficient trust level</a><span class="bullet" style="width: 10px;height: 10px;background-color: #CEA9A9;margin-right: 3px;margin-left: 3px;display: inline-flex;align-items: baseline;line-height: 0.5;">&nbsp;</span>dev</li>
+                                <% if @data[:popular_posts].present? %>
+                                    <%- @data[:popular_posts].each do |p| %>
+                                        <li style="mso-line-height-rule: exactly;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;">
+                                          <a href="<%= "#{Discourse.base_url}/t/#{p['topic_slug']}/#{p['topic_id']}/#{p['id']}" %>" style="mso-line-height-rule: exactly;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;color: #C52E26;font-weight: normal;text-decoration: none;">
+                                            <%= p['topic_title'] %>
+                                          </a>
+                                          <span class="bullet" style="width: 10px;height: 10px;background-color: #CEA9A9;margin-right: 3px;margin-left: 3px;display: inline-flex;align-items: baseline;line-height: 0.5;">&nbsp;</span>
+                                          <%= p['category_name'] %>
+                                        </li>
+                                    <% end %>
+                                <% else %>
+                                    <li>No data yet</li>
+                                <% end %>
                               </ul>
 
                               <h4 class="null" style="display: block;margin: 0;padding: 0;font-family: Verdana;font-size: 14px;font-style: normal;font-weight: normal;line-height: 125%;letter-spacing: normal;text-align: left;color: #C52E26 !important;"><strong>Popular Topics</strong></h4>
 
                               <ul>
-                                <li style="mso-line-height-rule: exactly;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;"><a href="http://meta.discourse.org/t/rgsoc-2016-visual-forum-analytics-community-discussion/46905" target="_blank" style="mso-line-height-rule: exactly;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;color: #C52E26;font-weight: normal;text-decoration: none;">Visual Forum Analytics Community Discussion</a><span class="bullet" style="width: 10px;height: 10px;background-color: #CEA9A9;margin-right: 3px;margin-left: 3px;display: inline-flex;align-items: baseline;line-height: 0.5;">&nbsp;</span>dev</li>
-                                <li style="mso-line-height-rule: exactly;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;"><a href="http://meta.discourse.org/t/default-other-enable-quoting/46896" target="_blank" style="mso-line-height-rule: exactly;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;color: #C52E26;font-weight: normal;text-decoration: none;">Default other enable quoting</a><span class="bullet" style="width: 10px;height: 10px;background-color: #CEA9A9;margin-right: 3px;margin-left: 3px;display: inline-flex;align-items: baseline;line-height: 0.5;">&nbsp;</span>dev</li>
-                                <li style="mso-line-height-rule: exactly;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;"><a href="http://meta.discourse.org/t/not-able-to-change-category-if-i-start-a-new-topic-from-a-specific-category/46889" target="_blank" style="mso-line-height-rule: exactly;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;color: #C52E26;font-weight: normal;text-decoration: none;">Not able to change category if I start a new topic from a specific category</a><span class="bullet" style="width: 10px;height: 10px;background-color: #CEA9A9;margin-right: 3px;margin-left: 3px;display: inline-flex;align-items: baseline;line-height: 0.5;">&nbsp;</span>dev</li>
+                                <% if @data[:popular_topics].present? %>
+                                    <%- @data[:popular_topics].each do |t| %>
+                                        <li style="mso-line-height-rule: exactly;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;">
+                                          <a href="<%= "#{Discourse.base_url}/t/#{t['slug']}/#{t['topic_id']}" %>" target="_blank" style="mso-line-height-rule: exactly;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;color: #C52E26;font-weight: normal;text-decoration: none;">
+                                            <%= t['title'] %>
+                                          </a>
+                                          <span class="bullet" style="width: 10px;height: 10px;background-color: #CEA9A9;margin-right: 3px;margin-left: 3px;display: inline-flex;align-items: baseline;line-height: 0.5;">&nbsp;</span>
+                                          <%= t['category'] %>
+                                        </li>
+                                    <% end %>
+                                <% else %>
+                                    <li>No data yet</li>
+                                <% end %>
                               </ul>
 
                               <h4 class="null" style="display: block;margin: 0;padding: 0;font-family: Verdana;font-size: 14px;font-style: normal;font-weight: normal;line-height: 125%;letter-spacing: normal;text-align: left;color: #C52E26 !important;"><strong>Most Liked Posts</strong></h4>
 
                               <ul>
-                                <li style="mso-line-height-rule: exactly;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;"><a href="http://meta.discourse.org/t/our-latest-experimental-branch-es6-modules-text-rendering/46815" target="_blank" style="mso-line-height-rule: exactly;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;color: #C52E26;font-weight: normal;text-decoration: none;"><strong>Our latest experimental branch: ES6 Modules + Text Rendering</strong></a> <span class="bullet" style="width: 10px;height: 10px;background-color: #CEA9A9;margin-right: 3px;margin-left: 3px;display: inline-flex;align-items: baseline;line-height: 0.5;">&nbsp;</span>dev
-
-                                  <blockquote style="border-left: 5px solid #e0e0e0;padding-left: 10px;mso-line-height-rule: exactly;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;">Approximately 2 years ago we <a href="https://meta.discourse.org/t/future-thoughts-discourses-javascript-ember-app/16715" style="mso-line-height-rule: exactly;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;color: #C52E26;font-weight: normal;text-decoration: none;"><strong>started down the long path to ES6 modules</strong></a>. For a long time, I'd spent 30 minutes a day working on converting files, which eventually got replaced with my strategy of converting a file every time I had to open it.</blockquote>
-                                </li>
-                                <li style="mso-line-height-rule: exactly;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;"><a href="http://meta.discourse.org/t/cant-create-topic-with-tag-using-admin-api-due-to-insufficient-trust-level/46972" target="_blank" style="mso-line-height-rule: exactly;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;color: #C52E26;font-weight: normal;text-decoration: none;"><strong>Can't create topic with tag using admin API due to insufficient trust level</strong></a> <span class="bullet" style="width: 10px;height: 10px;background-color: #CEA9A9;margin-right: 3px;margin-left: 3px;display: inline-flex;align-items: baseline;line-height: 0.5;">&nbsp;</span>dev
-                                  <blockquote style="border-left: 5px solid #e0e0e0;padding-left: 10px;mso-line-height-rule: exactly;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;">
-                                    <p style="margin: 10px 0;padding: 0;mso-line-height-rule: exactly;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;color: #404040;font-family: Verdana;font-size: 14px;line-height: 150%;text-align: left;">Ugh, no, of course not. Minimum trust level to create was set to 3 (the default, I think). Early on I had thought of the admin as being the one creating tags and so assumed it would work, but of course setting api_username to arbitrary users changing that makes sense.</p>
-                                  </blockquote>
-                                </li>
+                                <% if @data[:most_liked_posts].present? %>
+                                    <%- @data[:most_liked_posts].each do |p| %>
+                                        <li style="mso-line-height-rule: exactly;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;">
+                                          <a href="<%= "#{Discourse.base_url}/t/#{p['topic_slug']}/#{p['topic_id']}/#{p['id']}" %>" target="_blank" style="mso-line-height-rule: exactly;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;color: #C52E26;font-weight: normal;text-decoration: none;">
+                                            <strong>
+                                              <%= p['topic_title'] %>
+                                            </strong>
+                                          </a> <span class="bullet" style="width: 10px;height: 10px;background-color: #CEA9A9;margin-right: 3px;margin-left: 3px;display: inline-flex;align-items: baseline;line-height: 0.5;">&nbsp;</span><%= p['category'] %>
+                                          <blockquote style="border-left: 5px solid #e0e0e0;padding-left: 10px;mso-line-height-rule: exactly;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;">
+                                            <%= p['content'].to_s.html_safe %>
+                                          </blockquote>
+                                        </li>
+                                    <% end %>
+                                <% else %>
+                                    <li>No data yet</li>
+                                <% end %>
                               </ul>
 
                               <h4 class="null" style="display: block;margin: 0;padding: 0;font-family: Verdana;font-size: 14px;font-style: normal;font-weight: normal;line-height: 125%;letter-spacing: normal;text-align: left;color: #C52E26 !important;"><strong>Most Replied Topics</strong></h4>
 
                               <ul>
-                                <li style="mso-line-height-rule: exactly;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;"><a href="http://meta.discourse.org/t/rgsoc-2016-visual-forum-analytics-community-discussion/46905" target="_blank" style="mso-line-height-rule: exactly;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;color: #C52E26;font-weight: normal;text-decoration: none;">Visual Forum Analytics Community Discussion</a><span class="bullet" style="width: 10px;height: 10px;background-color: #CEA9A9;margin-right: 3px;margin-left: 3px;display: inline-flex;align-items: baseline;line-height: 0.5;">&nbsp;</span>dev</li>
-                                <li style="mso-line-height-rule: exactly;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;"><a href="http://meta.discourse.org/t/default-other-enable-quoting/46896" target="_blank" style="mso-line-height-rule: exactly;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;color: #C52E26;font-weight: normal;text-decoration: none;">Default other enable quoting</a><span class="bullet" style="width: 10px;height: 10px;background-color: #CEA9A9;margin-right: 3px;margin-left: 3px;display: inline-flex;align-items: baseline;line-height: 0.5;">&nbsp;</span>dev</li>
-                                <li style="mso-line-height-rule: exactly;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;"><a href="http://meta.discourse.org/t/not-able-to-change-category-if-i-start-a-new-topic-from-a-specific-category/46889" target="_blank" style="mso-line-height-rule: exactly;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;color: #C52E26;font-weight: normal;text-decoration: none;">Not able to change category if I start a new topic from a specific category</a><span class="bullet" style="width: 10px;height: 10px;background-color: #CEA9A9;margin-right: 3px;margin-left: 3px;display: inline-flex;align-items: baseline;line-height: 0.5;">&nbsp;</span>dev</li>
+                                <% if @data[:most_replied_topics].present? %>
+                                    <% @data[:most_replied_topics].each do |t| %>
+                                        <li style="mso-line-height-rule: exactly;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;">
+                                          <a href="<%= "#{Discourse.base_url}/t/#{t['slug']}/#{t['id']}" %>" target="_blank" style="mso-line-height-rule: exactly;-ms-text-size-adjust: 100%;-webkit-text-size-adjust: 100%;color: #C52E26;font-weight: normal;text-decoration: none;">
+                                            <%= t['title'] %>
+                                          </a>
+                                          <span class="bullet" style="width: 10px;height: 10px;background-color: #CEA9A9;margin-right: 3px;margin-left: 3px;display: inline-flex;align-items: baseline;line-height: 0.5;">&nbsp;</span><%= t['category'] %>
+                                        </li>
+                                    <% end %>
+                                <% else %>
+                                    <li>No data yet</li>
+                                <% end %>
                               </ul>
                               <br>
                               <br>
@@ -1187,6 +1204,6 @@
       </td>
     </tr>
   </table>
-</div>
+</center>
 </body>
 </html>
