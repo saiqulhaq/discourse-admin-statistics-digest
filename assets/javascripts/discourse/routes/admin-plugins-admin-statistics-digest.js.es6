@@ -1,4 +1,5 @@
 import { ajax } from 'discourse/lib/ajax';
+import { popupAjaxError } from 'discourse/lib/ajax-error';
 
 const baseUrl = '/admin/plugins/admin-statistics-digest';
 export default Discourse.Route.extend({
@@ -20,6 +21,14 @@ export default Discourse.Route.extend({
     this.render('adminStatisticsDigestSetting');
   },
 
+  _showNotice() {
+    var notice = bootbox.dialog('Submitted successfully');
+    setTimeout(function() {
+      notice.modal('hide')
+    }, 1000)
+  },
+
+
   actions: {
     toggleSelectedCategory(category) {
       var model = this.controllerFor('adminStatisticsDigestCategories').get('model');
@@ -30,18 +39,21 @@ export default Discourse.Route.extend({
     },
     saveSelectedCategory(model) {
       var data = model.filter(function(e) { return e.selected == true }).mapBy('id');
-      ajax(`${baseUrl}/categories/update.json`, { type: 'put', data: {categories: data} }).then(() => this.refresh());
+      ajax(`${baseUrl}/categories/update.json`, { type: 'put', data: {categories: data} })
+        .then(() => this.refresh()).catch(popupAjaxError);
     },
     requestPreviewEmail() {
-      ajax(`${baseUrl}/report-scheduler/preview.json`)
+      var self = this;
+      ajax(`${baseUrl}/report-scheduler/preview.json`).then(() => {
+        self._showNotice();
+      }).catch(popupAjaxError)
     },
     setEmailTimeout(timeOut) {
-      ajax(`${baseUrl}/report-scheduler/timeout.json`, { type: 'put', data: timeOut }).then((res) => {
-        if(!res.success) {
-          alert('Failed to update the email send out time')
-        }
-      })
-    }
+      var self = this;
+      ajax(`${baseUrl}/report-scheduler/timeout.json`, { type: 'put', data: timeOut }).then(() => {
+        self._showNotice();
+      }).catch(popupAjaxError)
+    },
   }
 });
 
