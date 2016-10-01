@@ -1,17 +1,13 @@
 <div class="form-horizontal settings">
 
-    <h3>Send email test for last 30 days <button {{action 'previewEmail' target=controllers.adminStatisticsDigestEmailSetting}}>Send</button></h3>
+    <h4>Send email test for last 30 days <button {{action 'previewEmail' target=controllers.adminStatisticsDigestEmailSetting}}>Send</button></h4>
 
-    <br>
     <hr>
-    <br>
 
-    <h3>Set the sending out time of the email report</h3>
+    <h4>Set the sendout time of the email report</h4>
 
     <label for="day">
-        Every
-      {{view "select" content=controllers.adminStatisticsDigestEmailSetting.days value=controllers.adminStatisticsDigestEmailSetting.selectedDay}}
-        day
+      Every {{view "select" content=controllers.adminStatisticsDigestEmailSetting.days value=controllers.adminStatisticsDigestEmailSetting.selectedDay}}th of each month
     </label>
 
     <label for="time">
@@ -24,13 +20,11 @@
     <button {{action 'setTimeout' target=controllers.adminStatisticsDigestEmailSetting}}>Save</button>
 
     <br>
-    <hr>
+    <br>
     <br>
 
-
-    <h3>Select which categories that will be included in <b>Active Responders</b> report</h3>
-
     <div class="content-list">
+        <h4>Select which categories to include in the Active Responders report</h4>
 
         <ul>
           {{#each category in controllers.adminStatisticsDigestCategories.arrangedContent itemController='adminStatisticsDigestCategory'}}
