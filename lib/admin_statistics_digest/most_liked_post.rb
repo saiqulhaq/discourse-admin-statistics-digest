@@ -14,6 +14,7 @@ LEFT JOIN topics ON "topics"."id" = "posts"."topic_id"
 LEFT JOIN categories ON "categories"."id" = "topics"."category_id"
 WHERE ("posts"."deleted_at" IS NULL)
 #{"AND ((\"posts\".\"created_at\", \"posts\".\"created_at\") OVERLAPS ('#{filters.active_range.first.beginning_of_day}', '#{filters.active_range.last.end_of_day}') OR DATE(\"posts\".\"created_at\") = '#{filters.active_range.first}' OR DATE(\"posts\".\"created_at\") =  '#{filters.active_range.last}')" if filters.active_range }
+AND "topics"."user_id" > 0 AND ("topics"."archetype" != 'private_message' OR "topics"."subtype" != 'system_message' )
 ORDER BY "posts"."like_count" DESC
 #{"LIMIT #{filters.limit}" if filters.limit }
     SQL
