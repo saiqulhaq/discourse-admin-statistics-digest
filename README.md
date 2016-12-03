@@ -24,3 +24,6 @@ rspec --drb
 ## License
 
 MIT
+
+
+Pull v0.10-beta if you are using Discourse uses Ember version < 2
