@@ -62,7 +62,7 @@ Spork.prefork do
       #  and pretend they are default.
       # There are a bunch of settings that are seeded, they must be loaded as defaults
       SiteSetting.current.each do |k,v|
-        SiteSetting.defaults[k] = v
+        SiteSetting.defaults.set_regardless_of_locale(k, v)
       end
 
       require_dependency 'site_settings/local_process_provider'
@@ -80,19 +80,6 @@ Spork.prefork do
     end
 
     config.before :each do |x|
-      # TODO not sure about this, we could use a mock redis implementation here:
-      #   this gives us really clean "flush" semantics, howere the side-effect is that
-      #   we are no longer using a clean redis implementation, a preferable solution may
-      #   be simply flushing before tests, trouble is that redis may be reused with dev
-      #   so that would mean the dev would act weird
-      #
-      #   perf benefit seems low (shaves 20 secs off a 4 minute test suite)
-      #
-      # $redis = DiscourseMockRedis.new
-      #
-      # disable all observers, enable as needed during specs
-      #
-      ActiveRecord::Base.observers.disable :all
       SiteSetting.provider.all.each do |setting|
         SiteSetting.remove_override!(setting.name)
       end
@@ -118,9 +105,6 @@ Spork.prefork do
     end
 
   end
-
-
-
 end
 
 require_relative '../../discourse-admin-statistics-digest/lib/admin_statistics_digest'

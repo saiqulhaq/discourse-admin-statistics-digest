@@ -9,6 +9,10 @@ Follow our [Install a Plugin](https://meta.discourse.org/t/install-a-plugin/1915
 
 If you have issues or suggestions for the plugin, please bring them up on [Discourse Meta](https://meta.discourse.org).
 
+## Development
+
+this plugin needs Timecop and Spork gem, so add timecop and spork gem into Discourse's Gemfile first
+
 ## Testing
 
 For faster testing performance, run the spork server first, then execute rspec
