@@ -1,23 +1,39 @@
+# frozen_string_literal: true
+
 if ENV['COVERAGE']
   require 'simplecov'
   SimpleCov.start
 end
 
 require 'rubygems'
-require 'spork'
+require 'mocha/api'
 
-PLUGIN_PATH = 'plugins/discourse-admin-statistics-digest'.freeze unless defined?(PLUGIN_PATH)
+require_relative './support/helpers'
 
-Spork.prefork do
+begin
+  require 'timecop'
+rescue LoadError
+  raise 'This plugin depends on Timecop gem for testing'
+end
+
+begin
+  require 'spork'
+rescue LoadError
+  nil
+end
+
+PLUGIN_PATH = 'plugins/discourse-admin-statistics-digest' unless defined?(PLUGIN_PATH)
+
+rspec_config = lambda do
   require 'fabrication'
   ENV['RAILS_ENV'] ||= 'test'
   require File.expand_path('../../../../config/environment', __FILE__)
   require 'rspec/rails'
 
-  Dir[Rails.root.join('spec/support/**/*.rb')].each {|f| require f}
-  Dir[Rails.root.join('spec/fabricators/*.rb')].each {|f| require f}
+  Dir[Rails.root.join('spec/support/**/*.rb')].each { |f| require f }
+  Dir[Rails.root.join('spec/fabricators/*.rb')].each { |f| require f }
 
-  Dir[Rails.root.join(PLUGIN_PATH, 'spec/support/**/*.rb')].each {|f| require f}
+  Dir[Rails.root.join(PLUGIN_PATH, 'spec/support/**/*.rb')].each { |f| require f }
 
   SeedFu.fixture_paths = [Rails.root.join("#{PLUGIN_PATH}/spec/fixtures")]
 
@@ -26,7 +42,13 @@ Spork.prefork do
   SeedFu.seed
 
   RSpec.configure do |config|
+    config.mock_framework = :mocha
+
     config.fail_fast = ENV['RSPEC_FAIL_FAST'] == '1'
+
+    example_file_path = File.expand_path('../../tmp/rspec_next_failures', __FILE__)
+    config.example_status_persistence_file_path = example_file_path
+
     config.include Helpers
 
     config.order = 'random'
@@ -44,7 +66,6 @@ Spork.prefork do
     config.infer_base_class_for_anonymous_controllers = true
 
     config.before(:suite) do
-
       Sidekiq.error_handlers.clear
 
       # Ugly, but needed until we have a user creator
@@ -61,7 +82,7 @@ Spork.prefork do
       # We nuke the DB storage provider from site settings, so need to yank out the existing settings
       #  and pretend they are default.
       # There are a bunch of settings that are seeded, they must be loaded as defaults
-      SiteSetting.current.each do |k,v|
+      SiteSetting.current.each do |k, v|
         SiteSetting.defaults.set_regardless_of_locale(k, v)
       end
 
@@ -79,7 +100,7 @@ Spork.prefork do
       end
     end
 
-    config.before :each do |x|
+    config.before :each do
       SiteSetting.provider.all.each do |setting|
         SiteSetting.remove_override!(setting.name)
       end
@@ -93,23 +114,29 @@ Spork.prefork do
     end
 
     class TestCurrentUserProvider < Auth::DefaultCurrentUserProvider
-      def log_on_user(user,session,cookies)
+      def log_on_user(user, session, cookies)
         session[:current_user_id] = user.id
         super
       end
 
-      def log_off_user(session,cookies)
+      def log_off_user(session, cookies)
         session[:current_user_id] = nil
         super
       end
     end
-
   end
 end
 
-require_relative '../../discourse-admin-statistics-digest/lib/admin_statistics_digest'
+if defined? Spork
+  Spork.prefork do
+    rspec_config.call
+  end
 
-Spork.each_run do
-  Discourse.after_fork
+  Spork.each_run do
+    Discourse.after_fork
+  end
+else
+  rspec_config.call
 end
 
+require_relative '../../discourse-admin-statistics-digest/lib/admin_statistics_digest'

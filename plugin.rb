@@ -10,6 +10,11 @@ enabled_site_setting :admin_statistics_digest
 gem 'rufus-scheduler', '3.1.8'
 gem 'sidekiq-scheduler', '2.0.9'
 
+# if Rails.env.test?
+  gem 'spork'
+  gem 'timecop'
+# end
+
 add_admin_route 'admin_statistics_digest.title', 'admin-statistics-digest'
 
 after_initialize do

@@ -130,7 +130,7 @@ class AdminStatisticsDigest::ReportMailer < ActionMailer::Base
   end
 
   def report
-    @report ||= AdminStatisticsDigest::Report.new
+    @report ||= ::AdminStatisticsDigest::Report.new
   end
 
 end
