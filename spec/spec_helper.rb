@@ -13,7 +13,7 @@ require_relative './support/helpers'
 begin
   require 'timecop'
 rescue LoadError
-  raise 'This plugin depends on Timecop gem for testing'
+  raise "This plugin depends on Timecop gem for testing. Add 'timecop' to Discourse Gemfile"
 end
 
 begin
