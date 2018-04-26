@@ -1,4 +1,4 @@
-### discourse-admin-statistics-digest
+**NOTE: This plugin has been deprecated in favour of https://github.com/discourse/discourse-site-report**
 
 
 ## Installation
